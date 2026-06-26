@@ -1,0 +1,32 @@
+{
+  "edition": "app-builder",
+  "schemaVersion": "1.0",
+  "minEngineVersion": "0.1.0",
+  "_note": "Adobe App Builder. Toolchain: Node + aio (IMS). The org → project → workspace cascade is LIVE from `aio console` (not registry data). AUTH: REUSE the existing aio session — the `ims` step checks `aio where` and only runs `aio login` if NOT authenticated; it NEVER forces a re-login or logout. Templates come from the registry baseline.",
+  "actions": [
+    {
+      "id": "create-new",
+      "label": "Create a new App Builder app",
+      "steps": [
+        { "kind": "preflight", "id": "toolchain", "label": "Check Node (>=20) + aio CLI" },
+        { "kind": "credential", "id": "ims", "needs": ["imsLogin"], "label": "Adobe sign-in — reuses the existing aio session if present; never forces a re-login" },
+        { "kind": "choose", "id": "org", "label": "Organization", "from": "cli:aio console org list --json" },
+        { "kind": "choose", "id": "project", "label": "Project", "from": "cli:aio console project list --orgId ${org} --json" },
+        { "kind": "choose", "id": "workspace", "label": "Workspace", "from": "cli:aio console workspace list --orgId ${org} --projectId ${project} --json" },
+        { "kind": "choose", "id": "template", "label": "Starter", "from": "registry.templates(app-builder)" },
+        { "kind": "input", "id": "location", "label": "Project location & name", "validate": "empty-target" },
+        { "kind": "run", "id": "context", "command": "aio console workspace select ${workspace} --orgId ${org} --projectId ${project}", "locale": "host" },
+        { "kind": "run", "id": "init", "command": "aio app init ${name} --template ${template}", "locale": "host", "cwd": "${parent}" },
+        { "kind": "info", "id": "done", "label": "Created. Run `aio app dev` to start the local runtime, or `aio app deploy` to ship." }
+      ]
+    },
+    {
+      "id": "open-existing",
+      "label": "Open an existing App Builder app",
+      "steps": [
+        { "kind": "input", "id": "path", "label": "Project folder (contains app.config.yaml)", "validate": "non-empty-dir" },
+        { "kind": "resolve", "id": "detect", "from": "project.appConfigYaml", "label": "Detect the App Builder app from app.config.yaml" }
+      ]
+    }
+  ]
+}

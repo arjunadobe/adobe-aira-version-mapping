@@ -26,7 +26,8 @@ export function validateAll(root = path.resolve(__dirname, '..')) {
 			if (n === 0) errors.push(`${productId}/${file}: zero versions (scrape likely broke)`);
 			if (!data.latest) errors.push(`${productId}/${file}: missing 'latest'`);
 			for (const [v, row] of Object.entries(data.versions ?? {})) {
-				if (!row.php) errors.push(`${productId}/${file}@${v}: missing php`);
+				// product-agnostic: a row needs SOME runtime requirement (php for Commerce, node for App Builder/EDS)
+				if (!row.php && !row.node) errors.push(`${productId}/${file}@${v}: missing a runtime requirement (php or node)`);
 				if (!row.sourceRef) errors.push(`${productId}/${file}@${v}: missing sourceRef`);
 			}
 		}

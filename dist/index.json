@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-06-26T14:59:28.237Z",
+  "generatedAt": "2026-06-26T20:48:33.203Z",
   "products": {
     "commerce": {
       "status": "active",
@@ -24,8 +24,15 @@
       }
     },
     "app-builder": {
-      "status": "planned",
-      "label": "Adobe App Builder"
+      "status": "active",
+      "label": "Adobe App Builder",
+      "editions": {
+        "app-builder": {
+          "sha256": "ff6e644ee0ff6b1c289a66bf3acf1e9c39909fb4aeff7a72908d9949fb0bde0a",
+          "minEngineVersion": "0.1.0",
+          "latest": "current"
+        }
+      }
     },
     "eds": {
       "status": "planned",

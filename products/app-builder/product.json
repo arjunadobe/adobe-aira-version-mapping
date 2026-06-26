@@ -1,0 +1,8 @@
+{
+  "id": "app-builder",
+  "label": "Adobe App Builder",
+  "_note": "Toolchain: Node + aio (IMS) — no PHP/Java/Marketplace-keys. One edition; the org/project/workspace cascade is live from `aio console` at wizard time, not registry data. Reuses the existing aio session (never forces re-login). This is the substrate Commerce SaaS will build on.",
+  "editions": {
+    "app-builder": { "source": "sources/aio.mjs", "flow": "flows/app-builder.flow.json" }
+  }
+}

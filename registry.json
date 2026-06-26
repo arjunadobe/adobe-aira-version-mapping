@@ -4,7 +4,7 @@
   "_roadmap": "Order: commerce (active) → app-builder → eds → commerce-saas → Class B/C generators. AEM full-stack archetype is DEFERRED (low priority; the pure aira-aem model is kept). The active roadmap is the modern out-of-process JS stack — shared toolchain Node + aio + git, no PHP/Java. commerce-saas builds ON app-builder + eds. See docs in scaffold-design/docs/PRODUCT-ROADMAP.md.",
   "products": {
     "commerce":      { "path": "products/commerce",      "label": "Adobe Commerce / Magento",  "status": "active" },
-    "app-builder":   { "path": "products/app-builder",   "label": "Adobe App Builder",         "status": "planned" },
+    "app-builder":   { "path": "products/app-builder",   "label": "Adobe App Builder",         "status": "active" },
     "eds":           { "path": "products/eds",           "label": "Edge Delivery Services",    "status": "planned" },
     "commerce-saas": { "path": "products/commerce-saas", "label": "Adobe Commerce SaaS (out-of-process)", "status": "planned" },
     "aem":           { "path": "products/aem",           "label": "Adobe Experience Manager (full-stack archetype)", "status": "deferred" }

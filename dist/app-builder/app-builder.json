@@ -1,0 +1,131 @@
+{
+  "product": "app-builder",
+  "edition": "app-builder",
+  "schemaVersion": "1.0",
+  "data": {
+    "_meta": {
+      "edition": "app-builder",
+      "source": "npm:@adobe/aio-cli",
+      "sourceSha": "11.1.2",
+      "generatedAt": "2026-06-26T00:00:00.000Z",
+      "schemaVersion": "1.0",
+      "_GENERATED": "MACHINE-WRITTEN by scripts/refresh.mjs from the npm registry (@adobe/aio-cli latest + engines.node + the app plugin). App Builder is a toolchain baseline, not a version matrix; org/project/workspace are fetched live from `aio console` at wizard time, NOT stored here."
+    },
+    "latest": "current",
+    "versions": {
+      "current": {
+        "line": "current",
+        "node": ">=20",
+        "aioCli": "11.1.2",
+        "runtimes": [
+          "nodejs:20",
+          "nodejs:18"
+        ],
+        "templates": [
+          "@adobe/generator-app-builder",
+          "@adobe/generator-app-api-mesh",
+          "@adobe/generator-app-events-generic"
+        ],
+        "sourceRef": "npm:@adobe/aio-cli@11.1.2",
+        "immutable": false
+      }
+    }
+  },
+  "flow": {
+    "edition": "app-builder",
+    "schemaVersion": "1.0",
+    "minEngineVersion": "0.1.0",
+    "_note": "Adobe App Builder. Toolchain: Node + aio (IMS). The org → project → workspace cascade is LIVE from `aio console` (not registry data). AUTH: REUSE the existing aio session — the `ims` step checks `aio where` and only runs `aio login` if NOT authenticated; it NEVER forces a re-login or logout. Templates come from the registry baseline.",
+    "actions": [
+      {
+        "id": "create-new",
+        "label": "Create a new App Builder app",
+        "steps": [
+          {
+            "kind": "preflight",
+            "id": "toolchain",
+            "label": "Check Node (>=20) + aio CLI"
+          },
+          {
+            "kind": "credential",
+            "id": "ims",
+            "needs": [
+              "imsLogin"
+            ],
+            "label": "Adobe sign-in — reuses the existing aio session if present; never forces a re-login"
+          },
+          {
+            "kind": "choose",
+            "id": "org",
+            "label": "Organization",
+            "from": "cli:aio console org list --json"
+          },
+          {
+            "kind": "choose",
+            "id": "project",
+            "label": "Project",
+            "from": "cli:aio console project list --orgId ${org} --json"
+          },
+          {
+            "kind": "choose",
+            "id": "workspace",
+            "label": "Workspace",
+            "from": "cli:aio console workspace list --orgId ${org} --projectId ${project} --json"
+          },
+          {
+            "kind": "choose",
+            "id": "template",
+            "label": "Starter",
+            "from": "registry.templates(app-builder)"
+          },
+          {
+            "kind": "input",
+            "id": "location",
+            "label": "Project location & name",
+            "validate": "empty-target"
+          },
+          {
+            "kind": "run",
+            "id": "context",
+            "command": "aio console workspace select ${workspace} --orgId ${org} --projectId ${project}",
+            "locale": "host"
+          },
+          {
+            "kind": "run",
+            "id": "init",
+            "command": "aio app init ${name} --template ${template}",
+            "locale": "host",
+            "cwd": "${parent}"
+          },
+          {
+            "kind": "info",
+            "id": "done",
+            "label": "Created. Run `aio app dev` to start the local runtime, or `aio app deploy` to ship."
+          }
+        ]
+      },
+      {
+        "id": "open-existing",
+        "label": "Open an existing App Builder app",
+        "steps": [
+          {
+            "kind": "input",
+            "id": "path",
+            "label": "Project folder (contains app.config.yaml)",
+            "validate": "non-empty-dir"
+          },
+          {
+            "kind": "resolve",
+            "id": "detect",
+            "from": "project.appConfigYaml",
+            "label": "Detect the App Builder app from app.config.yaml"
+          }
+        ]
+      }
+    ]
+  },
+  "_integrity": {
+    "sha256": "ff6e644ee0ff6b1c289a66bf3acf1e9c39909fb4aeff7a72908d9949fb0bde0a",
+    "signature": "STUB:ff6e644ee0ff6b1c"
+  }
+}

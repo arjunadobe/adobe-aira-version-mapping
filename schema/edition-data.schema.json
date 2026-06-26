@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://aira.dev/schema/edition-data.schema.json",
   "title": "Edition version data (generated)",
-  "description": "Shape of generated/<edition>.json. MACHINE-WRITTEN. Each version row is derived from the edition's upstream source ref and is immutable per ref.",
+  "description": "Shape of generated/<edition>.json. MACHINE-WRITTEN. Each version row is derived from the edition's upstream source ref. PRODUCT-AGNOSTIC: Commerce rows carry php/composer/services; App Builder/EDS rows carry node/aioCli/runtimes/templates. A row needs sourceRef + at least one runtime requirement (php OR node).",
   "type": "object",
   "required": ["_meta", "latest", "versions"],
   "properties": {
@@ -10,7 +10,7 @@
       "type": "object",
       "required": ["edition", "source", "sourceSha", "generatedAt", "schemaVersion"],
       "properties": {
-        "edition": { "enum": ["adobe-commerce-cloud", "adobe-commerce-onprem", "magento-oss"] },
+        "edition": { "type": "string", "description": "e.g. adobe-commerce-cloud, magento-oss, app-builder, eds-boilerplate" },
         "source": { "type": "string", "description": "upstream repo, e.g. magento/magento-cloud" },
         "sourceSha": { "type": "string", "description": "upstream commit SHA this was generated from" },
         "generatedAt": { "type": "string", "format": "date-time" },
@@ -22,21 +22,27 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["line", "php", "composer", "extensions", "services", "sourceRef"],
+        "required": ["line", "sourceRef"],
+        "description": "A version row needs sourceRef + at least one runtime requirement (php for Commerce, node for App Builder/EDS).",
+        "anyOf": [
+          { "required": ["php"] },
+          { "required": ["node"] }
+        ],
         "properties": {
-          "line": { "type": "string", "description": "e.g. 2.4.8" },
-          "patches": { "type": "array", "items": { "type": "string" }, "description": "known patch refs, e.g. [2.4.8, 2.4.8-p1]" },
-          "php": { "type": "string", "description": "default PHP for the line, e.g. 8.4" },
-          "phpAlternatives": { "type": "array", "items": { "type": "string" }, "description": "other supported PHP, e.g. [8.3] from a -php8.3 branch" },
-          "composer": { "type": "string", "description": "required Composer version" },
+          "line": { "type": "string", "description": "e.g. 2.4.8 (Commerce) or 'current' (toolchain baseline)" },
+          "patches": { "type": "array", "items": { "type": "string" } },
+          "php": { "type": "string", "description": "Commerce: default PHP, e.g. 8.4" },
+          "phpAlternatives": { "type": "array", "items": { "type": "string" } },
+          "composer": { "type": "string" },
           "extensions": { "type": "array", "items": { "type": "string" } },
-          "services": {
-            "type": "object",
-            "description": "service -> version, from .magento/services.yaml (Commerce) or n/a (OSS)",
-            "additionalProperties": { "type": "string" }
-          },
-          "sourceRef": { "type": "string", "description": "the upstream ref this row came from, e.g. magento-cloud@2.4.8" },
-          "immutable": { "type": "boolean", "description": "true for tags/release branches (cache forever)" }
+          "services": { "type": "object", "additionalProperties": { "type": "string" } },
+          "node": { "type": "string", "description": "App Builder/EDS: required local Node, e.g. >=20" },
+          "aioCli": { "type": "string", "description": "App Builder: latest aio CLI version (npm)" },
+          "aemCli": { "type": "string", "description": "EDS: aem-cli version" },
+          "runtimes": { "type": "array", "items": { "type": "string" }, "description": "App Builder: I/O Runtime action runtimes, e.g. [nodejs:20, nodejs:18]" },
+          "templates": { "type": "array", "items": { "type": "string" }, "description": "App Builder/EDS: available starters" },
+          "sourceRef": { "type": "string", "description": "the upstream ref this row came from, e.g. magento-cloud@2.4.8 or npm:@adobe/aio-cli@11.1.2" },
+          "immutable": { "type": "boolean" }
         }
       }
     }
