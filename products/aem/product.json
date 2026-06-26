@@ -1,0 +1,10 @@
+{
+  "id": "aem",
+  "label": "Adobe Experience Manager",
+  "status": "planned",
+  "_note": "Stub showing the pattern extends. When activated: add sources/aem-archetype.mjs (scrapes the aem-project-archetype releases + the AEM SDK version feed), generated/aem-cloud.json + aem-65.json, and flows/. Then flip status to 'active' in registry.json. The shared engine needs NO change.",
+  "editions": {
+    "aem-cloud": { "source": "sources/aem-archetype.mjs", "flow": "flows/aem-cloud.flow.json" },
+    "aem-65":    { "source": "sources/aem-archetype.mjs", "flow": "flows/aem-65.flow.json" }
+  }
+}

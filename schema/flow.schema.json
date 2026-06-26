@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/flow.schema.json",
+  "title": "Scaffold flow (authored)",
+  "description": "A declarative wizard graph the IDE interprets. DELIBERATELY TINY: choices, equality guards, prereq/credential refs, command templates, branches. No loops, no expressions — if it needs those, it belongs in the engine, not the flow.",
+  "type": "object",
+  "required": ["edition", "schemaVersion", "minEngineVersion", "actions"],
+  "properties": {
+    "edition": { "enum": ["adobe-commerce-cloud", "adobe-commerce-onprem", "magento-oss"] },
+    "schemaVersion": { "type": "string" },
+    "minEngineVersion": { "type": "string", "description": "oldest IDE engine that can interpret this flow" },
+    "actions": {
+      "type": "array",
+      "description": "create-new | open-existing | clone | clone-github",
+      "items": { "$ref": "#/definitions/action" }
+    }
+  },
+  "definitions": {
+    "action": {
+      "type": "object",
+      "required": ["id", "label", "steps"],
+      "properties": {
+        "id": { "enum": ["create-new", "open-existing", "clone", "clone-github"] },
+        "label": { "type": "string" },
+        "steps": { "type": "array", "items": { "$ref": "#/definitions/step" } }
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["choose", "input", "resolve", "preflight", "credential", "run", "branch", "info"] },
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "when": { "type": "object", "description": "equality guard, e.g. { method: composer }", "additionalProperties": { "type": "string" } },
+        "from": { "type": "string", "description": "data ref for `choose`/`resolve`, e.g. registry.versions or registry.requirements(${ref})" },
+        "allowCustom": { "type": "boolean", "description": "for `choose`: let the user type a branch/ref" },
+        "validate": { "type": "string", "description": "e.g. git-ls-remote (confirm the ref exists)" },
+        "needs": {
+          "type": "array",
+          "description": "credential flags this step requires, collected JUST-IN-TIME via secure form",
+          "items": { "enum": ["composerAuth", "sshKey", "imsLogin"] }
+        },
+        "command": { "type": "string", "description": "parameterized template, ${field} interpolated. NEVER raw user/remote strings." },
+        "locale": { "enum": ["host", "env"] },
+        "cwd": { "type": "string" },
+        "branches": {
+          "type": "object",
+          "description": "for kind=branch: map of choice value -> steps[]",
+          "additionalProperties": { "type": "array", "items": { "$ref": "#/definitions/step" } }
+        }
+      }
+    }
+  }
+}

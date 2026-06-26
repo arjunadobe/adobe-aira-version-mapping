@@ -1,0 +1,17 @@
+{
+  "id": "commerce",
+  "label": "Adobe Commerce / Magento",
+  "_note": "Per-product detail. requirementSource = the RICHEST matrix (Experience League: per-patch PHP/Composer/OpenSearch/MariaDB/RabbitMQ/Valkey for all Commerce versions). EL covers cloud + on-prem + OSS (same version/service matrix); editions differ only in FLOW. extensionSource (GitHub composer.json) enriches the ext-* list EL omits. The engine scrapes requirementSource once and shares it across editions.",
+  "requirementSource": "sources/experience-league.mjs",
+  "extensionSource": "sources/magento2.mjs",
+  "editions": {
+    "adobe-commerce-cloud": { "source": "sources/experience-league.mjs", "flow": "flows/adobe-commerce-cloud.flow.json" },
+    "adobe-commerce-onprem": { "source": "sources/experience-league.mjs", "flow": "flows/adobe-commerce-cloud.flow.json" },
+    "magento-oss": { "source": "sources/experience-league.mjs", "flow": "flows/magento-oss.flow.json" }
+  },
+  "alternateSources": {
+    "_note": "magento-cloud / magento2 GitHub YAML are more stable (machine-readable, no footnote artifacts) but per-LINE, not per-patch. Use as a cross-check against EL in the validate gate.",
+    "magento-cloud": "sources/magento-cloud.mjs",
+    "magento2": "sources/magento2.mjs"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-06-26T12:01:36.440Z",
+  "products": {
+    "commerce": {
+      "status": "active",
+      "label": "Adobe Commerce / Magento",
+      "editions": {
+        "adobe-commerce-cloud": {
+          "sha256": "5437bcdff64f42c5c20f5a49738b9a4c2be1a44126bcea2005125280122f3d23",
+          "minEngineVersion": "0.1.0",
+          "latest": "2.4.9"
+        },
+        "adobe-commerce-onprem": {
+          "sha256": "9eeaed69da325480350c705800a5e31f9087a0d92a70eca589d49656b153abfb",
+          "minEngineVersion": "0.1.0",
+          "latest": "2.4.9"
+        },
+        "magento-oss": {
+          "sha256": "1fdee36c775813c52ea42c5cbe491dcc3ad9ed1abb310f47280e3ecf7ed8d397",
+          "minEngineVersion": "0.1.0",
+          "latest": "2.4.8"
+        }
+      }
+    },
+    "aem": {
+      "status": "planned",
+      "label": "Adobe Experience Manager"
+    },
+    "app-builder": {
+      "status": "planned",
+      "label": "Adobe App Builder"
+    },
+    "eds": {
+      "status": "planned",
+      "label": "Edge Delivery Services"
+    }
+  }
+}

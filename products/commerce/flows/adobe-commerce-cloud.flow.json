@@ -1,0 +1,32 @@
+{
+  "edition": "adobe-commerce-cloud",
+  "schemaVersion": "1.0",
+  "minEngineVersion": "0.1.0",
+  "_note": "Adobe Commerce Cloud. Shares the requirement data with on-prem (same versions) but a different acquisition flow: project:get from the Cloud git, build happens in the Cloud. IMS/SSH credentials, not composer keys, at fetch time.",
+  "actions": [
+    {
+      "id": "clone",
+      "label": "Get an Adobe Commerce Cloud project",
+      "steps": [
+        { "kind": "credential", "id": "login", "needs": ["imsLogin"], "label": "Sign in to Adobe (magento-cloud)" },
+        { "kind": "choose", "id": "project", "label": "Cloud project", "from": "cli:magento-cloud project:list" },
+        { "kind": "choose", "id": "environment", "label": "Environment", "from": "cli:magento-cloud environment:list" },
+        { "kind": "credential", "id": "ssh", "needs": ["sshKey"], "label": "SSH key (if not in agent)" },
+        { "kind": "run", "id": "get", "command": "magento-cloud project:get ${project} ${name} --environment ${environment}", "locale": "host", "cwd": "${parent}" },
+        { "kind": "info", "id": "done", "label": "Cloud build/deploy runs in the Cloud; locally use composer install for IDE intelligence" }
+      ]
+    },
+    {
+      "id": "create-new",
+      "label": "New Adobe Commerce on-prem project",
+      "steps": [
+        { "kind": "choose", "id": "ref", "label": "Version", "from": "registry.versions(adobe-commerce-cloud)" },
+        { "kind": "resolve", "id": "requirements", "from": "registry.requirements(adobe-commerce-cloud, ${ref})", "label": "Resolve PHP / Composer / services for ${ref}" },
+        { "kind": "preflight", "id": "server-requirements", "label": "Check server requirements vs host" },
+        { "kind": "credential", "id": "keys", "needs": ["composerAuth"], "label": "Commerce repo keys (secure form)" },
+        { "kind": "run", "id": "create", "command": "composer create-project --repository-url=https://repo.magento.com/ magento/project-enterprise-edition ${name} ${ref}", "needs": ["composerAuth"], "locale": "env", "cwd": "${parent}" },
+        { "kind": "run", "id": "setup", "command": "bin/magento setup:install", "locale": "env", "cwd": "${parent}/${name}" }
+      ]
+    }
+  ]
+}

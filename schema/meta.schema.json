@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/meta.schema.json",
+  "title": "Registry provenance (_meta.json)",
+  "description": "Records WHAT each generated file was derived from, so the registry is a verifiable cache — never hand-authored data.",
+  "type": "object",
+  "required": ["generatedAt", "schemaVersion", "sources"],
+  "properties": {
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "schemaVersion": { "type": "string" },
+    "sources": {
+      "type": "object",
+      "description": "edition -> upstream provenance",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["repo", "sha", "url"],
+        "properties": {
+          "repo": { "type": "string" },
+          "sha": { "type": "string", "description": "the upstream commit SHA the diff-check compares against" },
+          "url": { "type": "string" }
+        }
+      }
+    }
+  }
+}

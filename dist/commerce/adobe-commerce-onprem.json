@@ -1,0 +1,239 @@
+{
+  "product": "commerce",
+  "edition": "adobe-commerce-onprem",
+  "schemaVersion": "1.0",
+  "data": {
+    "_meta": {
+      "edition": "adobe-commerce-onprem",
+      "source": "magento/magento-cloud",
+      "sourceSha": "2611ba8c5c6d4fb113ed64dba152424b5ee75cbd",
+      "generatedAt": "2026-06-26T00:00:00.000Z",
+      "schemaVersion": "1.0",
+      "_GENERATED": "MACHINE-WRITTEN by scripts/refresh.mjs from magento/magento-cloud branches + .magento.app.yaml + .magento/services.yaml. DO NOT HAND-EDIT."
+    },
+    "latest": "2.4.9",
+    "versions": {
+      "2.4.6": {
+        "line": "2.4.6",
+        "patches": [
+          "2.4.6"
+        ],
+        "php": "8.2",
+        "phpAlternatives": [
+          "8.1"
+        ],
+        "composer": "2.2.x",
+        "extensions": [
+          "bcmath",
+          "ctype",
+          "curl",
+          "dom",
+          "gd",
+          "intl",
+          "mbstring",
+          "openssl",
+          "pdo_mysql",
+          "simplexml",
+          "soap",
+          "sodium",
+          "xsl",
+          "zip"
+        ],
+        "services": {
+          "mysql": "8.0",
+          "opensearch": "2",
+          "cache": "redis:7.0"
+        },
+        "sourceRef": "magento-cloud@2.4.6",
+        "immutable": true
+      },
+      "2.4.7": {
+        "line": "2.4.7",
+        "patches": [
+          "2.4.7"
+        ],
+        "php": "8.3",
+        "phpAlternatives": [
+          "8.2"
+        ],
+        "composer": "2.7.x",
+        "extensions": [
+          "bcmath",
+          "ctype",
+          "curl",
+          "dom",
+          "gd",
+          "intl",
+          "mbstring",
+          "openssl",
+          "pdo_mysql",
+          "simplexml",
+          "soap",
+          "sodium",
+          "xsl",
+          "zip"
+        ],
+        "services": {
+          "mysql": "8.0",
+          "opensearch": "2",
+          "cache": "redis:7.2"
+        },
+        "sourceRef": "magento-cloud@2.4.7",
+        "immutable": true
+      },
+      "2.4.8": {
+        "line": "2.4.8",
+        "patches": [
+          "2.4.8",
+          "2.4.8-php8.3",
+          "2.4.8-appserver"
+        ],
+        "php": "8.4",
+        "phpAlternatives": [
+          "8.3"
+        ],
+        "composer": "2.9.8",
+        "extensions": [
+          "xsl",
+          "sodium"
+        ],
+        "services": {
+          "mysql": "11.8",
+          "opensearch": "3",
+          "cache": "valkey:8.1"
+        },
+        "sourceRef": "magento-cloud@2.4.8",
+        "immutable": true
+      },
+      "2.4.9": {
+        "line": "2.4.9",
+        "patches": [
+          "2.4.9",
+          "2.4.9-alpha"
+        ],
+        "php": "8.4",
+        "phpAlternatives": [
+          "8.3"
+        ],
+        "composer": "2.9.x",
+        "extensions": [
+          "xsl",
+          "sodium"
+        ],
+        "services": {
+          "mysql": "11.8",
+          "opensearch": "3",
+          "cache": "valkey:8.1"
+        },
+        "sourceRef": "magento-cloud@2.4.9",
+        "immutable": true
+      }
+    }
+  },
+  "flow": {
+    "edition": "adobe-commerce-cloud",
+    "schemaVersion": "1.0",
+    "minEngineVersion": "0.1.0",
+    "_note": "Adobe Commerce Cloud. Shares the requirement data with on-prem (same versions) but a different acquisition flow: project:get from the Cloud git, build happens in the Cloud. IMS/SSH credentials, not composer keys, at fetch time.",
+    "actions": [
+      {
+        "id": "clone",
+        "label": "Get an Adobe Commerce Cloud project",
+        "steps": [
+          {
+            "kind": "credential",
+            "id": "login",
+            "needs": [
+              "imsLogin"
+            ],
+            "label": "Sign in to Adobe (magento-cloud)"
+          },
+          {
+            "kind": "choose",
+            "id": "project",
+            "label": "Cloud project",
+            "from": "cli:magento-cloud project:list"
+          },
+          {
+            "kind": "choose",
+            "id": "environment",
+            "label": "Environment",
+            "from": "cli:magento-cloud environment:list"
+          },
+          {
+            "kind": "credential",
+            "id": "ssh",
+            "needs": [
+              "sshKey"
+            ],
+            "label": "SSH key (if not in agent)"
+          },
+          {
+            "kind": "run",
+            "id": "get",
+            "command": "magento-cloud project:get ${project} ${name} --environment ${environment}",
+            "locale": "host",
+            "cwd": "${parent}"
+          },
+          {
+            "kind": "info",
+            "id": "done",
+            "label": "Cloud build/deploy runs in the Cloud; locally use composer install for IDE intelligence"
+          }
+        ]
+      },
+      {
+        "id": "create-new",
+        "label": "New Adobe Commerce on-prem project",
+        "steps": [
+          {
+            "kind": "choose",
+            "id": "ref",
+            "label": "Version",
+            "from": "registry.versions(adobe-commerce-cloud)"
+          },
+          {
+            "kind": "resolve",
+            "id": "requirements",
+            "from": "registry.requirements(adobe-commerce-cloud, ${ref})",
+            "label": "Resolve PHP / Composer / services for ${ref}"
+          },
+          {
+            "kind": "preflight",
+            "id": "server-requirements",
+            "label": "Check server requirements vs host"
+          },
+          {
+            "kind": "credential",
+            "id": "keys",
+            "needs": [
+              "composerAuth"
+            ],
+            "label": "Commerce repo keys (secure form)"
+          },
+          {
+            "kind": "run",
+            "id": "create",
+            "command": "composer create-project --repository-url=https://repo.magento.com/ magento/project-enterprise-edition ${name} ${ref}",
+            "needs": [
+              "composerAuth"
+            ],
+            "locale": "env",
+            "cwd": "${parent}"
+          },
+          {
+            "kind": "run",
+            "id": "setup",
+            "command": "bin/magento setup:install",
+            "locale": "env",
+            "cwd": "${parent}/${name}"
+          }
+        ]
+      }
+    ]
+  },
+  "_integrity": {
+    "sha256": "9eeaed69da325480350c705800a5e31f9087a0d92a70eca589d49656b153abfb",
+    "signature": "STUB:9eeaed69da325480"
+  }
+}

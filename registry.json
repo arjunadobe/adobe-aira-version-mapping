@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "_note": "TOP-LEVEL FOLDER MAPPING. Each product is a self-contained folder under products/<id>/ with the SAME shape (product.json + sources/ + generated/ + flows/). The shared engine (scripts/) reads this file, iterates products, and loads each product's sources/flows by path — so adding a product = a new folder + one entry here, no engine change.",
+  "products": {
+    "commerce": { "path": "products/commerce", "label": "Adobe Commerce / Magento", "status": "active" },
+    "aem":         { "path": "products/aem",         "label": "Adobe Experience Manager", "status": "planned" },
+    "app-builder": { "path": "products/app-builder", "label": "Adobe App Builder",        "status": "planned" },
+    "eds":         { "path": "products/eds",         "label": "Edge Delivery Services",    "status": "planned" }
+  }
+}

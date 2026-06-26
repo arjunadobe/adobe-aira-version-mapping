@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/edition-data.schema.json",
+  "title": "Edition version data (generated)",
+  "description": "Shape of generated/<edition>.json. MACHINE-WRITTEN. Each version row is derived from the edition's upstream source ref and is immutable per ref.",
+  "type": "object",
+  "required": ["_meta", "latest", "versions"],
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "required": ["edition", "source", "sourceSha", "generatedAt", "schemaVersion"],
+      "properties": {
+        "edition": { "enum": ["adobe-commerce-cloud", "adobe-commerce-onprem", "magento-oss"] },
+        "source": { "type": "string", "description": "upstream repo, e.g. magento/magento-cloud" },
+        "sourceSha": { "type": "string", "description": "upstream commit SHA this was generated from" },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "schemaVersion": { "type": "string" }
+      }
+    },
+    "latest": { "type": "string", "description": "latest stable line" },
+    "versions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["line", "php", "composer", "extensions", "services", "sourceRef"],
+        "properties": {
+          "line": { "type": "string", "description": "e.g. 2.4.8" },
+          "patches": { "type": "array", "items": { "type": "string" }, "description": "known patch refs, e.g. [2.4.8, 2.4.8-p1]" },
+          "php": { "type": "string", "description": "default PHP for the line, e.g. 8.4" },
+          "phpAlternatives": { "type": "array", "items": { "type": "string" }, "description": "other supported PHP, e.g. [8.3] from a -php8.3 branch" },
+          "composer": { "type": "string", "description": "required Composer version" },
+          "extensions": { "type": "array", "items": { "type": "string" } },
+          "services": {
+            "type": "object",
+            "description": "service -> version, from .magento/services.yaml (Commerce) or n/a (OSS)",
+            "additionalProperties": { "type": "string" }
+          },
+          "sourceRef": { "type": "string", "description": "the upstream ref this row came from, e.g. magento-cloud@2.4.8" },
+          "immutable": { "type": "boolean", "description": "true for tags/release branches (cache forever)" }
+        }
+      }
+    }
+  }
+}

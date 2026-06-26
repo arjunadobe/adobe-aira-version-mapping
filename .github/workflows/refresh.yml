@@ -1,0 +1,34 @@
+name: refresh-registry
+
+# Poll Adobe's upstream repos every 4h. Regenerate ONLY on a real change, then
+# open a PR for review (flows execute commands on user machines — humans gate it).
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      - name: Poll + regenerate on change (validate gate inside)
+        run: node scripts/refresh.mjs
+
+      - name: Open PR if generated/ changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: registry/auto-refresh
+          title: 'registry: upstream version data changed'
+          commit-message: 'chore(registry): regenerate from upstream (auto)'
+          body: |
+            Automated refresh from Adobe's public repos.
+            Review the `generated/` diff (machine-written) before merge.
+            `build.mjs` signs `dist/` on merge.
+          labels: automated, registry

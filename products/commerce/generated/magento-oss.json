@@ -1,0 +1,28 @@
+{
+  "_meta": {
+    "edition": "magento-oss",
+    "source": "magento/magento2",
+    "sourceSha": "<filled by scraper from the latest tag commit>",
+    "generatedAt": "2026-06-26T00:00:00.000Z",
+    "schemaVersion": "1.0",
+    "_GENERATED": "MACHINE-WRITTEN by scripts/refresh.mjs from magento/magento2 tags + root composer.json (.require.php / ext-*). DO NOT HAND-EDIT. Services are n/a for OSS (no .magento/services.yaml); the IDE links to the system-requirements page."
+  },
+  "latest": "2.4.8",
+  "versions": {
+    "2.4.6": {
+      "line": "2.4.6", "patches": ["2.4.6"], "php": "8.2", "phpAlternatives": ["8.1"],
+      "composer": "2.2.x", "extensions": ["bcmath", "ctype", "curl", "dom", "fileinfo", "gd", "hash", "iconv", "intl", "mbstring", "openssl", "pdo_mysql", "simplexml", "soap", "sodium", "spl", "xsl", "zip"],
+      "services": {}, "sourceRef": "magento2@2.4.6", "immutable": true
+    },
+    "2.4.7": {
+      "line": "2.4.7", "patches": ["2.4.7"], "php": "8.3", "phpAlternatives": ["8.2"],
+      "composer": "2.7.x", "extensions": ["bcmath", "ctype", "curl", "dom", "fileinfo", "gd", "hash", "iconv", "intl", "mbstring", "openssl", "pdo_mysql", "simplexml", "soap", "sodium", "spl", "xsl", "zip"],
+      "services": {}, "sourceRef": "magento2@2.4.7", "immutable": true
+    },
+    "2.4.8": {
+      "line": "2.4.8", "patches": ["2.4.8"], "php": "8.4", "phpAlternatives": ["8.3"],
+      "composer": "2.9.x", "extensions": ["bcmath", "ctype", "curl", "dom", "fileinfo", "gd", "hash", "iconv", "intl", "mbstring", "openssl", "pdo_mysql", "simplexml", "soap", "sodium", "spl", "xsl", "zip"],
+      "services": {}, "sourceRef": "magento2@2.4.8", "immutable": true
+    }
+  }
+}

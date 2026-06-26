@@ -1,0 +1,37 @@
+{
+  "_meta": {
+    "edition": "adobe-commerce-cloud",
+    "source": "magento/magento-cloud",
+    "sourceSha": "2611ba8c5c6d4fb113ed64dba152424b5ee75cbd",
+    "generatedAt": "2026-06-26T00:00:00.000Z",
+    "schemaVersion": "1.0",
+    "_GENERATED": "MACHINE-WRITTEN by scripts/refresh.mjs from magento/magento-cloud branches + .magento.app.yaml + .magento/services.yaml. DO NOT HAND-EDIT."
+  },
+  "latest": "2.4.9",
+  "versions": {
+    "2.4.6": {
+      "line": "2.4.6", "patches": ["2.4.6"], "php": "8.2", "phpAlternatives": ["8.1"],
+      "composer": "2.2.x", "extensions": ["bcmath", "ctype", "curl", "dom", "gd", "intl", "mbstring", "openssl", "pdo_mysql", "simplexml", "soap", "sodium", "xsl", "zip"],
+      "services": { "mysql": "8.0", "opensearch": "2", "cache": "redis:7.0" },
+      "sourceRef": "magento-cloud@2.4.6", "immutable": true
+    },
+    "2.4.7": {
+      "line": "2.4.7", "patches": ["2.4.7"], "php": "8.3", "phpAlternatives": ["8.2"],
+      "composer": "2.7.x", "extensions": ["bcmath", "ctype", "curl", "dom", "gd", "intl", "mbstring", "openssl", "pdo_mysql", "simplexml", "soap", "sodium", "xsl", "zip"],
+      "services": { "mysql": "8.0", "opensearch": "2", "cache": "redis:7.2" },
+      "sourceRef": "magento-cloud@2.4.7", "immutable": true
+    },
+    "2.4.8": {
+      "line": "2.4.8", "patches": ["2.4.8", "2.4.8-php8.3", "2.4.8-appserver"], "php": "8.4", "phpAlternatives": ["8.3"],
+      "composer": "2.9.8", "extensions": ["xsl", "sodium"],
+      "services": { "mysql": "11.8", "opensearch": "3", "cache": "valkey:8.1" },
+      "sourceRef": "magento-cloud@2.4.8", "immutable": true
+    },
+    "2.4.9": {
+      "line": "2.4.9", "patches": ["2.4.9", "2.4.9-alpha"], "php": "8.4", "phpAlternatives": ["8.3"],
+      "composer": "2.9.x", "extensions": ["xsl", "sodium"],
+      "services": { "mysql": "11.8", "opensearch": "3", "cache": "valkey:8.1" },
+      "sourceRef": "magento-cloud@2.4.9", "immutable": true
+    }
+  }
+}

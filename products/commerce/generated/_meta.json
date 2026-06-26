@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-06-26T11:55:20.877Z",
+  "schemaVersion": "1.0",
+  "_GENERATED": "MACHINE-WRITTEN. The refresh job compares each source SHA below against the upstream HEAD; it regenerates ONLY when one changed.",
+  "sources": {
+    "adobe-commerce-cloud": {
+      "repo": "magento/magento-cloud",
+      "sha": "2611ba8c5c6d4fb113ed64dba152424b5ee75cbd",
+      "url": "https://github.com/magento/magento-cloud"
+    },
+    "adobe-commerce-onprem": {
+      "repo": "magento/magento-cloud",
+      "sha": "2611ba8c5c6d4fb113ed64dba152424b5ee75cbd",
+      "url": "https://github.com/magento/magento-cloud"
+    },
+    "magento-oss": {
+      "repo": "magento/magento2",
+      "sha": "<filled by scraper>",
+      "url": "https://github.com/magento/magento2"
+    }
+  }
+}

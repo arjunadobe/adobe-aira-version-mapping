@@ -1,0 +1,252 @@
+{
+  "product": "commerce",
+  "edition": "magento-oss",
+  "schemaVersion": "1.0",
+  "data": {
+    "_meta": {
+      "edition": "magento-oss",
+      "source": "magento/magento2",
+      "sourceSha": "<filled by scraper from the latest tag commit>",
+      "generatedAt": "2026-06-26T00:00:00.000Z",
+      "schemaVersion": "1.0",
+      "_GENERATED": "MACHINE-WRITTEN by scripts/refresh.mjs from magento/magento2 tags + root composer.json (.require.php / ext-*). DO NOT HAND-EDIT. Services are n/a for OSS (no .magento/services.yaml); the IDE links to the system-requirements page."
+    },
+    "latest": "2.4.8",
+    "versions": {
+      "2.4.6": {
+        "line": "2.4.6",
+        "patches": [
+          "2.4.6"
+        ],
+        "php": "8.2",
+        "phpAlternatives": [
+          "8.1"
+        ],
+        "composer": "2.2.x",
+        "extensions": [
+          "bcmath",
+          "ctype",
+          "curl",
+          "dom",
+          "fileinfo",
+          "gd",
+          "hash",
+          "iconv",
+          "intl",
+          "mbstring",
+          "openssl",
+          "pdo_mysql",
+          "simplexml",
+          "soap",
+          "sodium",
+          "spl",
+          "xsl",
+          "zip"
+        ],
+        "services": {},
+        "sourceRef": "magento2@2.4.6",
+        "immutable": true
+      },
+      "2.4.7": {
+        "line": "2.4.7",
+        "patches": [
+          "2.4.7"
+        ],
+        "php": "8.3",
+        "phpAlternatives": [
+          "8.2"
+        ],
+        "composer": "2.7.x",
+        "extensions": [
+          "bcmath",
+          "ctype",
+          "curl",
+          "dom",
+          "fileinfo",
+          "gd",
+          "hash",
+          "iconv",
+          "intl",
+          "mbstring",
+          "openssl",
+          "pdo_mysql",
+          "simplexml",
+          "soap",
+          "sodium",
+          "spl",
+          "xsl",
+          "zip"
+        ],
+        "services": {},
+        "sourceRef": "magento2@2.4.7",
+        "immutable": true
+      },
+      "2.4.8": {
+        "line": "2.4.8",
+        "patches": [
+          "2.4.8"
+        ],
+        "php": "8.4",
+        "phpAlternatives": [
+          "8.3"
+        ],
+        "composer": "2.9.x",
+        "extensions": [
+          "bcmath",
+          "ctype",
+          "curl",
+          "dom",
+          "fileinfo",
+          "gd",
+          "hash",
+          "iconv",
+          "intl",
+          "mbstring",
+          "openssl",
+          "pdo_mysql",
+          "simplexml",
+          "soap",
+          "sodium",
+          "spl",
+          "xsl",
+          "zip"
+        ],
+        "services": {},
+        "sourceRef": "magento2@2.4.8",
+        "immutable": true
+      }
+    }
+  },
+  "flow": {
+    "edition": "magento-oss",
+    "schemaVersion": "1.0",
+    "minEngineVersion": "0.1.0",
+    "_note": "AUTHORED flow (reviewed). The engine interprets it; it contains NO version data — it REFERENCES generated/magento-oss.json via registry.* refs. Prerequisites belong to the chosen version, shared across methods; credentials are per-step and just-in-time.",
+    "actions": [
+      {
+        "id": "create-new",
+        "label": "Create a new Magento Open Source project",
+        "steps": [
+          {
+            "kind": "choose",
+            "id": "method",
+            "label": "How",
+            "from": "static:[clone-github:Clone from GitHub, composer:Create via Composer]"
+          },
+          {
+            "kind": "choose",
+            "id": "ref",
+            "label": "Version",
+            "from": "registry.versions(magento-oss)",
+            "allowCustom": true,
+            "_note": "clone allows a custom branch/ref; composer expects a release line"
+          },
+          {
+            "kind": "resolve",
+            "id": "validate-ref",
+            "validate": "git-ls-remote",
+            "label": "Verify the ref exists"
+          },
+          {
+            "kind": "resolve",
+            "id": "requirements",
+            "from": "registry.requirements(magento-oss, ${ref})",
+            "label": "Resolve PHP / Composer / extensions for ${ref}"
+          },
+          {
+            "kind": "preflight",
+            "id": "server-requirements",
+            "label": "Check server requirements vs host"
+          },
+          {
+            "kind": "branch",
+            "id": "acquire",
+            "from": "method",
+            "branches": {
+              "clone-github": [
+                {
+                  "kind": "run",
+                  "id": "clone",
+                  "command": "git clone --branch ${ref} https://github.com/magento/magento2 ${name}",
+                  "locale": "host",
+                  "cwd": "${parent}"
+                },
+                {
+                  "kind": "credential",
+                  "id": "keys",
+                  "needs": [
+                    "composerAuth"
+                  ],
+                  "label": "Commerce repo keys (secure form)"
+                },
+                {
+                  "kind": "run",
+                  "id": "install",
+                  "command": "composer install",
+                  "needs": [
+                    "composerAuth"
+                  ],
+                  "locale": "env",
+                  "cwd": "${parent}/${name}"
+                }
+              ],
+              "composer": [
+                {
+                  "kind": "credential",
+                  "id": "keys",
+                  "needs": [
+                    "composerAuth"
+                  ],
+                  "label": "Commerce repo keys (secure form)"
+                },
+                {
+                  "kind": "run",
+                  "id": "create",
+                  "command": "composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition ${name} ${ref}",
+                  "needs": [
+                    "composerAuth"
+                  ],
+                  "locale": "env",
+                  "cwd": "${parent}"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "run",
+            "id": "setup",
+            "command": "bin/magento setup:install",
+            "locale": "env",
+            "cwd": "${parent}/${name}"
+          },
+          {
+            "kind": "info",
+            "id": "done",
+            "label": "Admin URL + credentials printed by setup:install"
+          }
+        ]
+      },
+      {
+        "id": "open-existing",
+        "label": "Open an existing Magento project",
+        "steps": [
+          {
+            "kind": "input",
+            "id": "path",
+            "label": "Project folder"
+          },
+          {
+            "kind": "resolve",
+            "id": "detect",
+            "from": "project.composerJson",
+            "label": "Detect edition + version from composer.json"
+          }
+        ]
+      }
+    ]
+  },
+  "_integrity": {
+    "sha256": "1fdee36c775813c52ea42c5cbe491dcc3ad9ed1abb310f47280e3ecf7ed8d397",
+    "signature": "STUB:1fdee36c775813c5"
+  }
+}

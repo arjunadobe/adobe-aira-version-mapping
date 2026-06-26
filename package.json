@@ -1,0 +1,13 @@
+{
+  "name": "adobe-aira-version-mapping",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AIRA scaffold registry: Adobe Commerce / Magento version + dependency data (generated from Adobe's public repos) and authored scaffold flows.",
+  "scripts": {
+    "refresh": "node scripts/refresh.mjs",
+    "refresh:force": "node scripts/refresh.mjs --force",
+    "validate": "node scripts/validate.mjs",
+    "build": "node scripts/build.mjs"
+  }
+}
