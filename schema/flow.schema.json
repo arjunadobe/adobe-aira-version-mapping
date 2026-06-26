@@ -20,7 +20,7 @@
       "type": "object",
       "required": ["id", "label", "steps"],
       "properties": {
-        "id": { "enum": ["create-new", "open-existing", "clone", "clone-github"] },
+        "id": { "type": "string", "description": "action id. Known: create-new · open-existing · clone (generic git URL) · clone-github · clone-cloud (magento-cloud project:get) · clone-git" },
         "label": { "type": "string" },
         "steps": { "type": "array", "items": { "$ref": "#/definitions/step" } }
       }

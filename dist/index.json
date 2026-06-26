@@ -1,18 +1,18 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-06-26T12:41:34.660Z",
+  "generatedAt": "2026-06-26T12:43:52.756Z",
   "products": {
     "commerce": {
       "status": "active",
       "label": "Adobe Commerce / Magento",
       "editions": {
         "adobe-commerce-cloud": {
-          "sha256": "c82c225cf44dd7247d0287b1288d5e2f5ff493e7fcce0553de0528c019ff658d",
+          "sha256": "218e2afd0afb3748d8be4cf89061e26e5a8e5d219a480c0056f484c1461bab71",
           "minEngineVersion": "0.1.0",
           "latest": "2.4.9"
         },
         "adobe-commerce-onprem": {
-          "sha256": "de8b6e500bb5f54ee05d9f6d539c4c6da74b63016c65982383fec1f190529f37",
+          "sha256": "b6783eff0ba78dcd5e893e3a9eeebd045a0d556c867f03b458e9e118c27decbb",
           "minEngineVersion": "0.1.0",
           "latest": "2.4.9"
         },

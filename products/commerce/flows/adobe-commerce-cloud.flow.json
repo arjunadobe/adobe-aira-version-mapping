@@ -5,7 +5,26 @@
   "_note": "Adobe Commerce Cloud. Shares the requirement data with on-prem (same versions) but a different acquisition flow: project:get from the Cloud git, build happens in the Cloud. IMS/SSH credentials, not composer keys, at fetch time.",
   "actions": [
     {
-      "id": "clone",
+      "id": "clone-git",
+      "label": "Clone an on-prem project from a git URL (GitHub / Bitbucket / GitLab / self-hosted)",
+      "_note": "Same generic clone as OSS, but the post-clone composer.json detection resolves the ENTERPRISE edition; composer install then needs the Marketplace keys + the enterprise package.",
+      "steps": [
+        { "kind": "input", "id": "url", "label": "Git repository URL", "validate": "git-url" },
+        { "kind": "resolve", "id": "host", "validate": "url-host-detect", "label": "Detect host + scheme (pick credential)" },
+        { "kind": "input", "id": "location", "label": "Project location & name", "validate": "empty-target" },
+        { "kind": "credential", "id": "git-auth", "needs": ["gitHostAuth"], "when": { "host.private": "true" }, "label": "Auth for ${host.name} (SSH key or token) — secure form, host-scoped" },
+        { "kind": "resolve", "id": "validate-ref", "validate": "git-ls-remote", "label": "Verify the URL/ref (with credential)" },
+        { "kind": "run", "id": "clone", "command": "git clone ${url} ${name}", "needs": ["gitHostAuth"], "locale": "host", "cwd": "${parent}" },
+        { "kind": "resolve", "id": "detect", "from": "project.composerJson(${parent}/${name})", "label": "Detect edition + version from THEIR composer.json" },
+        { "kind": "resolve", "id": "requirements", "from": "registry.requirements(${detect.edition}, ${detect.version})", "label": "Resolve requirements for the detected version" },
+        { "kind": "preflight", "id": "server-requirements", "label": "Check server requirements vs host" },
+        { "kind": "credential", "id": "keys", "needs": ["composerAuth"], "label": "Commerce repo keys (secure form)" },
+        { "kind": "run", "id": "install", "command": "composer install", "needs": ["composerAuth"], "locale": "env", "cwd": "${parent}/${name}" },
+        { "kind": "info", "id": "done", "label": "Cloned + installed. Run bin/magento setup:install for a fresh DB." }
+      ]
+    },
+    {
+      "id": "clone-cloud",
       "label": "Get an Adobe Commerce Cloud project",
       "steps": [
         { "kind": "credential", "id": "login", "needs": ["imsLogin"], "label": "Sign in to Adobe (magento-cloud)" },
