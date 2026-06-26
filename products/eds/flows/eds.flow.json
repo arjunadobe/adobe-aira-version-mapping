@@ -1,0 +1,42 @@
+{
+  "edition": "eds",
+  "schemaVersion": "1.0",
+  "minEngineVersion": "0.1.0",
+  "_note": "Edge Delivery Services (Franklin / aem.live). Toolchain: Node (>=18) + git + aem-cli (provides `aem up`). No PHP/Java, no IMS, no Marketplace keys. Create = clone a public boilerplate → npm install → aem up. aem-cli is a managed prereq (npm i -g @adobe/aem-cli).",
+  "actions": [
+    {
+      "id": "create-new",
+      "label": "Create a new Edge Delivery (EDS) project",
+      "steps": [
+        { "kind": "preflight", "id": "toolchain", "label": "Check Node (>=18) + git + aem-cli" },
+        { "kind": "choose", "id": "boilerplate", "label": "Boilerplate", "from": "registry.templates(eds)" },
+        { "kind": "input", "id": "location", "label": "Project location & name", "validate": "empty-target" },
+        { "kind": "run", "id": "clone", "command": "git clone https://github.com/adobe/${boilerplate}.git ${name}", "locale": "host", "cwd": "${parent}" },
+        { "kind": "run", "id": "install", "command": "npm install", "locale": "host", "cwd": "${parent}/${name}" },
+        { "kind": "run", "id": "up", "command": "aem up", "locale": "host", "cwd": "${parent}/${name}" },
+        { "kind": "info", "id": "done", "label": "Local preview running. Install the AEM Code Sync GitHub app on your repo and connect a content source (Google Drive / SharePoint)." }
+      ]
+    },
+    {
+      "id": "clone",
+      "label": "Clone an existing EDS repo (any git host)",
+      "steps": [
+        { "kind": "input", "id": "url", "label": "Git repository URL", "validate": "git-url" },
+        { "kind": "resolve", "id": "host", "validate": "url-host-detect", "label": "Detect host + scheme" },
+        { "kind": "input", "id": "location", "label": "Project location & name", "validate": "empty-target" },
+        { "kind": "credential", "id": "git-auth", "needs": ["gitHostAuth"], "when": { "host.private": "true" }, "label": "Auth for ${host.name} (SSH key or token), if private" },
+        { "kind": "run", "id": "clone", "command": "git clone ${url} ${name}", "needs": ["gitHostAuth"], "locale": "host", "cwd": "${parent}" },
+        { "kind": "run", "id": "install", "command": "npm install", "locale": "host", "cwd": "${parent}/${name}" },
+        { "kind": "run", "id": "up", "command": "aem up", "locale": "host", "cwd": "${parent}/${name}" }
+      ]
+    },
+    {
+      "id": "open-existing",
+      "label": "Open an existing EDS project",
+      "steps": [
+        { "kind": "input", "id": "path", "label": "Project folder (contains fstab.yaml + head.html)", "validate": "non-empty-dir" },
+        { "kind": "resolve", "id": "detect", "from": "project.fstab", "label": "Detect the EDS project (fstab.yaml / blocks/)" }
+      ]
+    }
+  ]
+}

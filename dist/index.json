@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-06-26T20:48:33.203Z",
+  "generatedAt": "2026-06-26T20:58:14.639Z",
   "products": {
     "commerce": {
       "status": "active",
@@ -35,8 +35,15 @@
       }
     },
     "eds": {
-      "status": "planned",
-      "label": "Edge Delivery Services"
+      "status": "active",
+      "label": "Edge Delivery Services",
+      "editions": {
+        "eds": {
+          "sha256": "cbb8c45f3569c7f5ced2b39892bd4ce7442f5f1f42d68a09911872ad6bfb4212",
+          "minEngineVersion": "0.1.0",
+          "latest": "current"
+        }
+      }
     },
     "commerce-saas": {
       "status": "planned",

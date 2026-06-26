@@ -1,0 +1,8 @@
+{
+  "id": "eds",
+  "label": "Edge Delivery Services",
+  "_note": "Franklin / aem.live. Toolchain: Node + git + aem-cli — no PHP/Java/IMS/Marketplace-keys. Create = clone a public boilerplate → npm install → aem up. The commerce boilerplate (aem-boilerplate-commerce) is the EDS storefront Commerce SaaS will compose.",
+  "editions": {
+    "eds": { "source": "sources/eds-boilerplate.mjs", "flow": "flows/eds.flow.json" }
+  }
+}

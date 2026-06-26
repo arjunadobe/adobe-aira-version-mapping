@@ -1,0 +1,21 @@
+{
+  "_meta": {
+    "edition": "eds",
+    "source": "npm:@adobe/aem-cli",
+    "sourceSha": "16.20.5",
+    "generatedAt": "2026-06-26T00:00:00.000Z",
+    "schemaVersion": "1.0",
+    "_GENERATED": "MACHINE-WRITTEN by scripts/refresh.mjs from npm (@adobe/aem-cli latest + engines.node) + the public adobe/aem-boilerplate* repos. EDS is a toolchain baseline, not a version matrix."
+  },
+  "latest": "current",
+  "versions": {
+    "current": {
+      "line": "current",
+      "node": ">=18",
+      "aemCli": "16.20.5",
+      "templates": ["aem-boilerplate", "aem-boilerplate-commerce", "aem-boilerplate-xwalk"],
+      "sourceRef": "npm:@adobe/aem-cli@16.20.5",
+      "immutable": false
+    }
+  }
+}
