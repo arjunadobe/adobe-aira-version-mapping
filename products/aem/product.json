@@ -1,10 +1,13 @@
 {
   "id": "aem",
-  "label": "Adobe Experience Manager",
-  "status": "planned",
-  "_note": "Stub showing the pattern extends. When activated: add sources/aem-archetype.mjs (scrapes the aem-project-archetype releases + the AEM SDK version feed), generated/aem-cloud.json + aem-65.json, and flows/. Then flip status to 'active' in registry.json. The shared engine needs NO change.",
-  "editions": {
-    "aem-cloud": { "source": "sources/aem-archetype.mjs", "flow": "flows/aem-cloud.flow.json" },
-    "aem-65":    { "source": "sources/aem-archetype.mjs", "flow": "flows/aem-65.flow.json" }
-  }
+  "label": "Adobe Experience Manager (full-stack archetype)",
+  "status": "deferred",
+  "_note": "DEFERRED (low priority). The Java/Maven full-stack archetype. EDS (AEM's modern frontend) is a separate active-roadmap product; a headless frontend would be a lighter later product. The pure airaAemNewProject.ts model is KEPT in aira-oss.",
+  "_toCreate": {
+    "status": "These files do NOT exist yet — created if/when AEM is activated. Until then `editions` is empty and the build skips this product.",
+    "sources": ["sources/aem-archetype.mjs (scrapes aem-project-archetype releases + AEM SDK versions)"],
+    "flows": ["flows/aem-cloud.flow.json (AEMaaCS) · flows/aem-65.flow.json — method: mvn archetype:generate, frontend field: none/general/react/angular"],
+    "generated": ["generated/aem-cloud.json · generated/aem-65.json"]
+  },
+  "editions": {}
 }
