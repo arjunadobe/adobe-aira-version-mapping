@@ -169,6 +169,12 @@
             "label": "SSH key (if not in agent)"
           },
           {
+            "kind": "input",
+            "id": "location",
+            "label": "Project location & name",
+            "validate": "empty-target"
+          },
+          {
             "kind": "run",
             "id": "get",
             "command": "magento-cloud project:get ${project} ${name} --environment ${environment}",
@@ -204,6 +210,12 @@
             "label": "Check server requirements vs host"
           },
           {
+            "kind": "input",
+            "id": "location",
+            "label": "Project location & name",
+            "validate": "empty-target"
+          },
+          {
             "kind": "credential",
             "id": "keys",
             "needs": [
@@ -233,7 +245,7 @@
     ]
   },
   "_integrity": {
-    "sha256": "9eeaed69da325480350c705800a5e31f9087a0d92a70eca589d49656b153abfb",
-    "signature": "STUB:9eeaed69da325480"
+    "sha256": "de8b6e500bb5f54ee05d9f6d539c4c6da74b63016c65982383fec1f190529f37",
+    "signature": "STUB:de8b6e500bb5f54e"
   }
 }

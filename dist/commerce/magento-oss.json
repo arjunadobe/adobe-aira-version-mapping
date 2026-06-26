@@ -121,7 +121,7 @@
     "edition": "magento-oss",
     "schemaVersion": "1.0",
     "minEngineVersion": "0.1.0",
-    "_note": "AUTHORED flow (reviewed). The engine interprets it; it contains NO version data — it REFERENCES generated/magento-oss.json via registry.* refs. Prerequisites belong to the chosen version, shared across methods; credentials are per-step and just-in-time.",
+    "_note": "AUTHORED flow (reviewed). The engine interprets it; it contains NO version data — it REFERENCES generated/magento-oss.json via registry.* refs. Prerequisites belong to the chosen version, shared across methods; credentials are per-step and just-in-time. The `location` step (name + empty-target) gates every acquisition — composer/git fail on a non-empty target, so we check first.",
     "actions": [
       {
         "id": "create-new",
@@ -157,6 +157,13 @@
             "kind": "preflight",
             "id": "server-requirements",
             "label": "Check server requirements vs host"
+          },
+          {
+            "kind": "input",
+            "id": "location",
+            "label": "Project location & name",
+            "validate": "empty-target",
+            "_note": "Collects ${parent} (folder to create in) + ${name}. empty-target FAILS if ${parent}/${name} already exists and is non-empty — composer create-project / git clone both refuse a non-empty target."
           },
           {
             "kind": "branch",
@@ -227,13 +234,107 @@
         ]
       },
       {
+        "id": "clone",
+        "label": "Clone from a git URL (GitHub / Bitbucket / GitLab / self-hosted)",
+        "_note": "User pastes their OWN repo URL (any host). The version is NOT known up front — it's read from THEIR composer.json after cloning, then mapped to requirements via the registry. Credential is HOST-SCOPED, resolved from the URL: ssh URL -> sshKey; private https -> gitHostAuth token; public -> none.",
+        "steps": [
+          {
+            "kind": "input",
+            "id": "url",
+            "label": "Git repository URL",
+            "validate": "git-url"
+          },
+          {
+            "kind": "resolve",
+            "id": "host",
+            "validate": "url-host-detect",
+            "label": "Detect host + scheme (pick credential)"
+          },
+          {
+            "kind": "input",
+            "id": "location",
+            "label": "Project location & name",
+            "validate": "empty-target",
+            "_note": "${parent}/${name} must not exist or must be empty — git clone refuses a non-empty target."
+          },
+          {
+            "kind": "credential",
+            "id": "git-auth",
+            "needs": [
+              "gitHostAuth"
+            ],
+            "when": {
+              "host.private": "true"
+            },
+            "label": "Auth for ${host.name} (SSH key or token) — secure form, host-scoped"
+          },
+          {
+            "kind": "resolve",
+            "id": "validate-ref",
+            "validate": "git-ls-remote",
+            "label": "Verify the URL/ref (with credential)"
+          },
+          {
+            "kind": "run",
+            "id": "clone",
+            "command": "git clone ${url} ${name}",
+            "needs": [
+              "gitHostAuth"
+            ],
+            "locale": "host",
+            "cwd": "${parent}"
+          },
+          {
+            "kind": "resolve",
+            "id": "detect",
+            "from": "project.composerJson(${parent}/${name})",
+            "label": "Detect edition + version from THEIR composer.json"
+          },
+          {
+            "kind": "resolve",
+            "id": "requirements",
+            "from": "registry.requirements(${detect.edition}, ${detect.version})",
+            "label": "Resolve requirements for the detected version"
+          },
+          {
+            "kind": "preflight",
+            "id": "server-requirements",
+            "label": "Check server requirements vs host"
+          },
+          {
+            "kind": "credential",
+            "id": "keys",
+            "needs": [
+              "composerAuth"
+            ],
+            "label": "Commerce repo keys (secure form)"
+          },
+          {
+            "kind": "run",
+            "id": "install",
+            "command": "composer install",
+            "needs": [
+              "composerAuth"
+            ],
+            "locale": "env",
+            "cwd": "${parent}/${name}"
+          },
+          {
+            "kind": "info",
+            "id": "done",
+            "label": "Cloned + installed. Run bin/magento setup:install if this is a fresh DB."
+          }
+        ]
+      },
+      {
         "id": "open-existing",
         "label": "Open an existing Magento project",
         "steps": [
           {
             "kind": "input",
             "id": "path",
-            "label": "Project folder"
+            "label": "Project folder",
+            "validate": "non-empty-magento-dir"
           },
           {
             "kind": "resolve",
@@ -246,7 +347,7 @@
     ]
   },
   "_integrity": {
-    "sha256": "1fdee36c775813c52ea42c5cbe491dcc3ad9ed1abb310f47280e3ecf7ed8d397",
-    "signature": "STUB:1fdee36c775813c5"
+    "sha256": "e794f465b7d8e4c9ce2e7586c40a1b830f4eda1dd70c5b12b65cb23f13022593",
+    "signature": "STUB:e794f465b7d8e4c9"
   }
 }

@@ -35,11 +35,14 @@
         "when": { "type": "object", "description": "equality guard, e.g. { method: composer }", "additionalProperties": { "type": "string" } },
         "from": { "type": "string", "description": "data ref for `choose`/`resolve`, e.g. registry.versions or registry.requirements(${ref})" },
         "allowCustom": { "type": "boolean", "description": "for `choose`: let the user type a branch/ref" },
-        "validate": { "type": "string", "description": "e.g. git-ls-remote (confirm the ref exists)" },
+        "validate": {
+          "type": "string",
+          "description": "engine-side check. Known: git-ls-remote (ref exists) · git-url (well-formed git URL) · empty-target (${parent}/${name} must NOT exist OR be empty) · url-host-detect (parse host+scheme to pick the credential)"
+        },
         "needs": {
           "type": "array",
-          "description": "credential flags this step requires, collected JUST-IN-TIME via secure form",
-          "items": { "enum": ["composerAuth", "sshKey", "imsLogin"] }
+          "description": "credential flags this step requires, collected JUST-IN-TIME via secure form (never chat), reused from the OS keychain. gitHostAuth is HOST-SCOPED (keyed by bitbucket.org / gitlab.com / self-hosted domain) and resolves to an SSH key (ssh URL) or a host token/PAT (private https).",
+          "items": { "enum": ["composerAuth", "sshKey", "gitHostAuth", "imsLogin"] }
         },
         "command": { "type": "string", "description": "parameterized template, ${field} interpolated. NEVER raw user/remote strings." },
         "locale": { "enum": ["host", "env"] },
