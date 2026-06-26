@@ -13,7 +13,7 @@
       "line": "current",
       "node": ">=18",
       "aemCli": "16.20.5",
-      "templates": ["aem-boilerplate", "aem-boilerplate-commerce", "aem-boilerplate-xwalk"],
+      "templates": ["adobe/aem-boilerplate", "hlxsites/aem-boilerplate-commerce"],
       "sourceRef": "npm:@adobe/aem-cli@16.20.5",
       "immutable": false
     }

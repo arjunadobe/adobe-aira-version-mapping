@@ -11,7 +11,7 @@
         { "kind": "preflight", "id": "toolchain", "label": "Check Node (>=18) + git + aem-cli" },
         { "kind": "choose", "id": "boilerplate", "label": "Boilerplate", "from": "registry.templates(eds)" },
         { "kind": "input", "id": "location", "label": "Project location & name", "validate": "empty-target" },
-        { "kind": "run", "id": "clone", "command": "git clone https://github.com/adobe/${boilerplate}.git ${name}", "locale": "host", "cwd": "${parent}" },
+        { "kind": "run", "id": "clone", "command": "git clone https://github.com/${boilerplate}.git ${name}", "locale": "host", "cwd": "${parent}", "_note": "boilerplate is a full org/repo path (orgs differ: adobe/ vs hlxsites/)" },
         { "kind": "run", "id": "install", "command": "npm install", "locale": "host", "cwd": "${parent}/${name}" },
         { "kind": "run", "id": "up", "command": "aem up", "locale": "host", "cwd": "${parent}/${name}" },
         { "kind": "info", "id": "done", "label": "Local preview running. Install the AEM Code Sync GitHub app on your repo and connect a content source (Google Drive / SharePoint)." }

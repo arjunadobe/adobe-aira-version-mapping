@@ -1,0 +1,161 @@
+{
+  "product": "commerce-saas",
+  "edition": "commerce-saas",
+  "schemaVersion": "1.0",
+  "data": {
+    "_meta": {
+      "edition": "commerce-saas",
+      "source": "npm:@adobe/aio-cli + @adobe/aem-cli",
+      "sourceSha": "aio@11.1.2+aem@16.20.5",
+      "generatedAt": "2026-06-26T00:00:00.000Z",
+      "schemaVersion": "1.0",
+      "_GENERATED": "MACHINE-WRITTEN by scripts/refresh.mjs from npm (aio-cli + aem-cli). Commerce SaaS composes App Builder + the EDS commerce storefront; toolchain baseline only — the storefront boilerplate is hlxsites/aem-boilerplate-commerce."
+    },
+    "latest": "current",
+    "versions": {
+      "current": {
+        "line": "current",
+        "node": ">=20",
+        "aioCli": "11.1.2",
+        "aemCli": "16.20.5",
+        "templates": [
+          "hlxsites/aem-boilerplate-commerce",
+          "@adobe/generator-app-api-mesh",
+          "@adobe/generator-app-events-generic",
+          "@dropins/storefront-pdp",
+          "@dropins/storefront-product-discovery",
+          "@dropins/storefront-cart",
+          "@dropins/storefront-checkout",
+          "@dropins/storefront-account",
+          "@dropins/storefront-order",
+          "@dropins/storefront-recommendations"
+        ],
+        "sourceRef": "npm:@adobe/aio-cli@11.1.2+aem-cli@16.20.5",
+        "immutable": false
+      }
+    }
+  },
+  "flow": {
+    "edition": "commerce-saas",
+    "schemaVersion": "1.0",
+    "minEngineVersion": "0.1.0",
+    "_note": "Adobe Commerce SaaS — out-of-process. Two create paths: (1) STOREFRONT = the EDS commerce boilerplate (hlxsites/aem-boilerplate-commerce) which pulls the @dropins/storefront-* set; (2) EXTENSION = an App Builder app (API Mesh + Commerce I/O Events). No PHP/Java/Marketplace-keys. App path reuses the existing aio session (never forces re-login).",
+    "actions": [
+      {
+        "id": "create-storefront",
+        "label": "Commerce SaaS storefront (Edge Delivery + drop-ins)",
+        "steps": [
+          {
+            "kind": "preflight",
+            "id": "toolchain",
+            "label": "Check Node (>=20) + git + aem-cli"
+          },
+          {
+            "kind": "input",
+            "id": "location",
+            "label": "Project location & name",
+            "validate": "empty-target"
+          },
+          {
+            "kind": "run",
+            "id": "clone",
+            "command": "git clone https://github.com/hlxsites/aem-boilerplate-commerce.git ${name}",
+            "locale": "host",
+            "cwd": "${parent}"
+          },
+          {
+            "kind": "run",
+            "id": "install",
+            "command": "npm install",
+            "locale": "host",
+            "cwd": "${parent}/${name}",
+            "_note": "postinstall pulls @dropins/storefront-*"
+          },
+          {
+            "kind": "run",
+            "id": "up",
+            "command": "aem up",
+            "locale": "host",
+            "cwd": "${parent}/${name}"
+          },
+          {
+            "kind": "info",
+            "id": "done",
+            "label": "Storefront preview running. Configure Commerce services (Catalog Service / Live Search via API Mesh); install AEM Code Sync; connect a content source."
+          }
+        ]
+      },
+      {
+        "id": "create-app",
+        "label": "Commerce SaaS extension (App Builder + API Mesh + I/O Events)",
+        "steps": [
+          {
+            "kind": "preflight",
+            "id": "toolchain",
+            "label": "Check Node (>=20) + aio CLI"
+          },
+          {
+            "kind": "credential",
+            "id": "ims",
+            "needs": [
+              "imsLogin"
+            ],
+            "label": "Adobe sign-in — reuses the existing aio session; never forces a re-login"
+          },
+          {
+            "kind": "choose",
+            "id": "org",
+            "label": "Organization",
+            "from": "cli:aio console org list --json"
+          },
+          {
+            "kind": "choose",
+            "id": "project",
+            "label": "Project",
+            "from": "cli:aio console project list --orgId ${org} --json"
+          },
+          {
+            "kind": "choose",
+            "id": "workspace",
+            "label": "Workspace",
+            "from": "cli:aio console workspace list --orgId ${org} --projectId ${project} --json"
+          },
+          {
+            "kind": "choose",
+            "id": "template",
+            "label": "Starter",
+            "from": "registry.templates(commerce-saas)"
+          },
+          {
+            "kind": "input",
+            "id": "location",
+            "label": "Project location & name",
+            "validate": "empty-target"
+          },
+          {
+            "kind": "run",
+            "id": "context",
+            "command": "aio console workspace select ${workspace} --orgId ${org} --projectId ${project}",
+            "locale": "host"
+          },
+          {
+            "kind": "run",
+            "id": "init",
+            "command": "aio app init ${name} --template ${template}",
+            "locale": "host",
+            "cwd": "${parent}"
+          },
+          {
+            "kind": "info",
+            "id": "done",
+            "label": "Subscribe to Commerce I/O events and wire API Mesh. Run `aio app dev` to start."
+          }
+        ]
+      }
+    ]
+  },
+  "_integrity": {
+    "sha256": "d4f83ed93e6f47ad76b6b0820cbf294a75cbfb76845874fb6394d6e2e580258b",
+    "signature": "STUB:d4f83ed93e6f47ad"
+  }
+}

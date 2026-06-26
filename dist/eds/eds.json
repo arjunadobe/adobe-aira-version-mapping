@@ -18,9 +18,8 @@
         "node": ">=18",
         "aemCli": "16.20.5",
         "templates": [
-          "aem-boilerplate",
-          "aem-boilerplate-commerce",
-          "aem-boilerplate-xwalk"
+          "adobe/aem-boilerplate",
+          "hlxsites/aem-boilerplate-commerce"
         ],
         "sourceRef": "npm:@adobe/aem-cli@16.20.5",
         "immutable": false
@@ -57,9 +56,10 @@
           {
             "kind": "run",
             "id": "clone",
-            "command": "git clone https://github.com/adobe/${boilerplate}.git ${name}",
+            "command": "git clone https://github.com/${boilerplate}.git ${name}",
             "locale": "host",
-            "cwd": "${parent}"
+            "cwd": "${parent}",
+            "_note": "boilerplate is a full org/repo path (orgs differ: adobe/ vs hlxsites/)"
           },
           {
             "kind": "run",
@@ -162,7 +162,7 @@
     ]
   },
   "_integrity": {
-    "sha256": "cbb8c45f3569c7f5ced2b39892bd4ce7442f5f1f42d68a09911872ad6bfb4212",
-    "signature": "STUB:cbb8c45f3569c7f5"
+    "sha256": "91e8da700c8ba18580747b419907548c26e427190dbdac11119a7b81fcb593b9",
+    "signature": "STUB:91e8da700c8ba185"
   }
 }

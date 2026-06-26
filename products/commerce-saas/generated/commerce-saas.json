@@ -1,0 +1,33 @@
+{
+  "_meta": {
+    "edition": "commerce-saas",
+    "source": "npm:@adobe/aio-cli + @adobe/aem-cli",
+    "sourceSha": "aio@11.1.2+aem@16.20.5",
+    "generatedAt": "2026-06-26T00:00:00.000Z",
+    "schemaVersion": "1.0",
+    "_GENERATED": "MACHINE-WRITTEN by scripts/refresh.mjs from npm (aio-cli + aem-cli). Commerce SaaS composes App Builder + the EDS commerce storefront; toolchain baseline only — the storefront boilerplate is hlxsites/aem-boilerplate-commerce."
+  },
+  "latest": "current",
+  "versions": {
+    "current": {
+      "line": "current",
+      "node": ">=20",
+      "aioCli": "11.1.2",
+      "aemCli": "16.20.5",
+      "templates": [
+        "hlxsites/aem-boilerplate-commerce",
+        "@adobe/generator-app-api-mesh",
+        "@adobe/generator-app-events-generic",
+        "@dropins/storefront-pdp",
+        "@dropins/storefront-product-discovery",
+        "@dropins/storefront-cart",
+        "@dropins/storefront-checkout",
+        "@dropins/storefront-account",
+        "@dropins/storefront-order",
+        "@dropins/storefront-recommendations"
+      ],
+      "sourceRef": "npm:@adobe/aio-cli@11.1.2+aem-cli@16.20.5",
+      "immutable": false
+    }
+  }
+}

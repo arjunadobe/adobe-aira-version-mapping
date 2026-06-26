@@ -1,0 +1,8 @@
+{
+  "generatedAt": "2026-06-26T00:00:00.000Z",
+  "schemaVersion": "1.0",
+  "_GENERATED": "MACHINE-WRITTEN. Compares the aio-cli + aem-cli versions against npm; regenerates only on change.",
+  "sources": {
+    "commerce-saas": { "sha": "aio@11.1.2+aem@16.20.5" }
+  }
+}

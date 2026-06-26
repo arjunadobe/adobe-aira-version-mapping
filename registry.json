@@ -6,7 +6,7 @@
     "commerce":      { "path": "products/commerce",      "label": "Adobe Commerce / Magento",  "status": "active" },
     "app-builder":   { "path": "products/app-builder",   "label": "Adobe App Builder",         "status": "active" },
     "eds":           { "path": "products/eds",           "label": "Edge Delivery Services",    "status": "active" },
-    "commerce-saas": { "path": "products/commerce-saas", "label": "Adobe Commerce SaaS (out-of-process)", "status": "planned" },
+    "commerce-saas": { "path": "products/commerce-saas", "label": "Adobe Commerce SaaS (out-of-process)", "status": "active" },
     "aem":           { "path": "products/aem",           "label": "Adobe Experience Manager (full-stack archetype)", "status": "deferred" }
   }
 }

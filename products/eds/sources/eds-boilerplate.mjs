@@ -13,8 +13,9 @@ import crypto from 'node:crypto';
 export const SOURCE_REPO = 'npm:@adobe/aem-cli';
 const NPM = 'https://registry.npmjs.org';
 
-// The canonical EDS starter boilerplates (public adobe/* repos).
-const BOILERPLATES = ['aem-boilerplate', 'aem-boilerplate-commerce', 'aem-boilerplate-xwalk'];
+// The canonical EDS starter boilerplates, as FULL org/repo paths — the orgs differ:
+// the standard boilerplate is under adobe/, the commerce one under hlxsites/.
+const BOILERPLATES = ['adobe/aem-boilerplate', 'hlxsites/aem-boilerplate-commerce'];
 
 async function getJson(url) {
 	const res = await fetch(url, { headers: { 'User-Agent': 'aira-registry' } });

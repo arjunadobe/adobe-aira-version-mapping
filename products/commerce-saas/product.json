@@ -1,13 +1,8 @@
 {
   "id": "commerce-saas",
   "label": "Adobe Commerce SaaS (out-of-process)",
-  "status": "planned",
-  "_note": "The out-of-process Commerce dev model — NO PHP backend. Custom logic lives in App Builder + API Mesh, the storefront in EDS drop-in blocks. Toolchain: Node + aio + git. BUILDS ON app-builder + eds — activate those first; this product's flows reuse their generators. Its Class C connectors (API Mesh · Live Search · Catalog Service · Recommendations · Data Connection · Payment Services) ARE the SaaS dev surface.",
-  "_toCreate": {
-    "status": "These files do NOT exist yet — created when this product is activated (after app-builder + eds). Until then `editions` is empty and the build skips this product.",
-    "sources": ["likely REUSE app-builder's aio source rather than duplicate an aio.mjs here"],
-    "flows": ["flows/commerce-saas.flow.json"],
-    "generated": ["generated/<edition>.json (machine-written by the refresh job)"]
-  },
-  "editions": {}
+  "_note": "The out-of-process Commerce dev model — NO PHP backend. Composes App Builder (aio + API Mesh + I/O Events) and the EDS commerce storefront (hlxsites/aem-boilerplate-commerce + @dropins/storefront-*). Toolchain: Node + aio + git + aem-cli. One edition; the flow offers two create paths (storefront / extension). Reuses the existing aio session (never forces re-login).",
+  "editions": {
+    "commerce-saas": { "source": "sources/commerce-saas.mjs", "flow": "flows/commerce-saas.flow.json" }
+  }
 }

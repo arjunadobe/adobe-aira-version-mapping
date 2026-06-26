@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-06-26T20:58:14.639Z",
+  "generatedAt": "2026-06-26T21:06:26.182Z",
   "products": {
     "commerce": {
       "status": "active",
@@ -39,15 +39,22 @@
       "label": "Edge Delivery Services",
       "editions": {
         "eds": {
-          "sha256": "cbb8c45f3569c7f5ced2b39892bd4ce7442f5f1f42d68a09911872ad6bfb4212",
+          "sha256": "91e8da700c8ba18580747b419907548c26e427190dbdac11119a7b81fcb593b9",
           "minEngineVersion": "0.1.0",
           "latest": "current"
         }
       }
     },
     "commerce-saas": {
-      "status": "planned",
-      "label": "Adobe Commerce SaaS (out-of-process)"
+      "status": "active",
+      "label": "Adobe Commerce SaaS (out-of-process)",
+      "editions": {
+        "commerce-saas": {
+          "sha256": "d4f83ed93e6f47ad76b6b0820cbf294a75cbfb76845874fb6394d6e2e580258b",
+          "minEngineVersion": "0.1.0",
+          "latest": "current"
+        }
+      }
     },
     "aem": {
       "status": "deferred",
