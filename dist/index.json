@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-06-26T12:43:52.756Z",
+  "generatedAt": "2026-06-26T14:54:49.485Z",
   "products": {
     "commerce": {
       "status": "active",
@@ -23,10 +23,6 @@
         }
       }
     },
-    "aem": {
-      "status": "planned",
-      "label": "Adobe Experience Manager"
-    },
     "app-builder": {
       "status": "planned",
       "label": "Adobe App Builder"
@@ -34,6 +30,14 @@
     "eds": {
       "status": "planned",
       "label": "Edge Delivery Services"
+    },
+    "commerce-saas": {
+      "status": "planned",
+      "label": "Adobe Commerce SaaS (out-of-process)"
+    },
+    "aem": {
+      "status": "deferred",
+      "label": "Adobe Experience Manager (full-stack archetype)"
     }
   }
 }

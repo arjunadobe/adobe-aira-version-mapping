@@ -1,0 +1,9 @@
+{
+  "id": "commerce-saas",
+  "label": "Adobe Commerce SaaS (out-of-process)",
+  "status": "planned",
+  "_note": "The out-of-process Commerce dev model — NO PHP backend. Custom logic lives in App Builder + API Mesh, the storefront in EDS drop-in blocks. Toolchain: Node + aio + git (no PHP/Java/Marketplace-keys for most paths). BUILDS ON app-builder + eds — activate those first; this product's flows reference their generators. Its Class C connectors (API Mesh · Live Search · Catalog Service · Recommendations · Data Connection · Payment Services) ARE the SaaS dev surface. When activated: add sources (aio templates + EDS drop-ins), generated data, and flows.",
+  "editions": {
+    "commerce-saas-extension": { "source": "sources/aio.mjs", "flow": "flows/commerce-saas.flow.json" }
+  }
+}
