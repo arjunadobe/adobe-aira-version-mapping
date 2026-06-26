@@ -40,7 +40,11 @@
           "aioCli": { "type": "string", "description": "App Builder: latest aio CLI version (npm)" },
           "aemCli": { "type": "string", "description": "EDS: aem-cli version" },
           "runtimes": { "type": "array", "items": { "type": "string" }, "description": "App Builder: I/O Runtime action runtimes, e.g. [nodejs:20, nodejs:18]" },
-          "templates": { "type": "array", "items": { "type": "string" }, "description": "App Builder/EDS: available starters" },
+          "templates": { "type": "array", "items": { "type": "string" }, "description": "DEPRECATED (back-compat): flat starter list. Prefer the typed fields below so consumers don't filter by kind." },
+          "storefront": { "type": "string", "description": "Commerce SaaS / EDS: the storefront boilerplate org/repo, e.g. hlxsites/aem-boilerplate-commerce" },
+          "appStarters": { "type": "array", "items": { "type": "string" }, "description": "App Builder / Commerce SaaS: the @adobe/generator-app-* starters (consumed verbatim by the extension picker)" },
+          "dropins": { "type": "array", "items": { "type": "string" }, "description": "Commerce SaaS: the @dropins/storefront-* components (reference / Class C connectors)" },
+          "boilerplates": { "type": "array", "items": { "type": "string" }, "description": "EDS: full org/repo boilerplate paths (orgs differ: adobe/ vs hlxsites/)" },
           "sourceRef": { "type": "string", "description": "the upstream ref this row came from, e.g. magento-cloud@2.4.8 or npm:@adobe/aio-cli@11.1.2" },
           "immutable": { "type": "boolean" }
         }

@@ -14,6 +14,20 @@
       "node": ">=20",
       "aioCli": "11.1.2",
       "aemCli": "16.20.5",
+      "storefront": "hlxsites/aem-boilerplate-commerce",
+      "appStarters": [
+        "@adobe/generator-app-api-mesh",
+        "@adobe/generator-app-events-generic"
+      ],
+      "dropins": [
+        "@dropins/storefront-pdp",
+        "@dropins/storefront-product-discovery",
+        "@dropins/storefront-cart",
+        "@dropins/storefront-checkout",
+        "@dropins/storefront-account",
+        "@dropins/storefront-order",
+        "@dropins/storefront-recommendations"
+      ],
       "templates": [
         "hlxsites/aem-boilerplate-commerce",
         "@adobe/generator-app-api-mesh",

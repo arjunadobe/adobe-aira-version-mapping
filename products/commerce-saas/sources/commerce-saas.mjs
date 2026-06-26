@@ -46,6 +46,11 @@ export async function scrape() {
 				node: '>=20', // union: aio-cli needs >=20, aem-cli >=18
 				aioCli: aio.version,
 				aemCli: aem.version,
+				// Typed fields — consumed VERBATIM by the wizard (no kind-filtering in the view):
+				storefront: STOREFRONT_BOILERPLATE,   // the EDS commerce boilerplate org/repo
+				appStarters: APP_STARTERS,             // the @adobe/generator-app-* starters
+				dropins: DROPINS,                      // the @dropins/storefront-* components
+				// Back-compat flat list (deprecated — prefer the typed fields above):
 				templates: [STOREFRONT_BOILERPLATE, ...APP_STARTERS, ...DROPINS],
 				sourceRef: `npm:@adobe/aio-cli@${aio.version}+aem-cli@${aem.version}`,
 				immutable: false,

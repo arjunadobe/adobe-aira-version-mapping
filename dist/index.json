@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-06-26T21:06:26.182Z",
+  "generatedAt": "2026-06-26T23:48:29.517Z",
   "products": {
     "commerce": {
       "status": "active",
@@ -50,7 +50,7 @@
       "label": "Adobe Commerce SaaS (out-of-process)",
       "editions": {
         "commerce-saas": {
-          "sha256": "d4f83ed93e6f47ad76b6b0820cbf294a75cbfb76845874fb6394d6e2e580258b",
+          "sha256": "4464bb96a104f5beb6e3d6c9a8b0404ebb44d052f5e4a526df2990b8628a1161",
           "minEngineVersion": "0.1.0",
           "latest": "current"
         }
