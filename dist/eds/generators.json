@@ -1,0 +1,45 @@
+{
+  "product": "eds",
+  "schemaVersion": "1.0",
+  "generators": [
+    {
+      "id": "eds.block",
+      "label": "EDS Block",
+      "class": "B",
+      "pack": "eds",
+      "applicability": "n/a",
+      "detect": "fstab.yaml",
+      "fields": [
+        {
+          "id": "blockName",
+          "label": "Block name",
+          "type": "text",
+          "validate": "kebab",
+          "default": "my-block"
+        }
+      ],
+      "files": [
+        {
+          "path": "blocks/${blockName}/${blockName}.js",
+          "merge": false,
+          "content": "/**\n * ${blockName} block — decorate() runs on the block element at render time.\n * EDS calls the default export with the block's root element.\n */\nexport default function decorate(block) {\n  // Each direct child row of `block` is a row in the authored table.\n  [...block.children].forEach((row) => {\n    row.classList.add('${blockName}-row');\n  });\n}\n"
+        },
+        {
+          "path": "blocks/${blockName}/${blockName}.css",
+          "merge": false,
+          "content": "/* ${blockName} block styles — scoped to .${blockName} (eds/block-css-scope). */\n.${blockName} {\n  display: grid;\n  gap: var(--spacing-m, 16px);\n}\n\n.${blockName} .${blockName}-row {\n  /* row styles */\n}\n"
+        },
+        {
+          "path": "blocks/${blockName}/README.md",
+          "merge": false,
+          "content": "# ${blockName}\n\nEDS block. Author it by creating a table whose first cell names the block (`${blockName}`).\n\n| ${blockName} |\n| ------------ |\n| content      |\n\n- `${blockName}.js` — `decorate(block)` default export, runs at render.\n- `${blockName}.css` — styles scoped to `.${blockName}`.\n"
+        }
+      ],
+      "postNote": "Add the block to a document by naming a table after it. The decorate() default export receives the block element."
+    }
+  ],
+  "_integrity": {
+    "sha256": "59c1f994835eace80743d0b46d596bdc1cfd27862a7a78504ed8938dbf47d0d0",
+    "signature": "STUB:59c1f994835eace8"
+  }
+}

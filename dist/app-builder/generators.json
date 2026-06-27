@@ -1,0 +1,35 @@
+{
+  "product": "app-builder",
+  "schemaVersion": "1.0",
+  "generators": [
+    {
+      "id": "app-builder.runtime-action",
+      "label": "Runtime action",
+      "class": "B",
+      "pack": "app-builder",
+      "applicability": "n/a",
+      "detect": "app.config.yaml",
+      "fields": [
+        {
+          "id": "actionName",
+          "label": "Action name",
+          "type": "text",
+          "validate": "kebab",
+          "default": "my-action"
+        }
+      ],
+      "files": [
+        {
+          "path": "actions/${actionName}/index.js",
+          "merge": false,
+          "content": "/*\n * ${actionName} — Adobe I/O Runtime action (OpenWhisk).\n * `main` receives the merged default + invocation params; return a JSON-serializable result.\n */\nconst { Core } = require('@adobe/aio-sdk');\n\nasync function main(params) {\n  const logger = Core.Logger('${actionName}', { level: params.LOG_LEVEL || 'info' });\n  try {\n    logger.info('${actionName} invoked');\n    // ... your logic here ...\n    return { statusCode: 200, body: { ok: true, action: '${actionName}' } };\n  } catch (error) {\n    logger.error(error);\n    return { statusCode: 500, body: { error: 'server error' } };\n  }\n}\n\nexports.main = main;\n"
+        }
+      ],
+      "postNote": "Register the action in app.config.yaml under runtimeManifest.packages.<pkg>.actions.${actionName} (function: actions/${actionName}/index.js). Then `aio app dev` / `aio app deploy`."
+    }
+  ],
+  "_integrity": {
+    "sha256": "be0357e17e651d791c1475a2525ed9711808ff0d40e33b8a83424b956a600923",
+    "signature": "STUB:be0357e17e651d79"
+  }
+}
