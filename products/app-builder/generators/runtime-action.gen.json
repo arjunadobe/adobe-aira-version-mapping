@@ -1,0 +1,15 @@
+{
+  "id": "app-builder.runtime-action",
+  "label": "Runtime action",
+  "class": "B",
+  "pack": "app-builder",
+  "applicability": "n/a",
+  "detect": "app.config.yaml",
+  "fields": [
+    { "id": "actionName", "label": "Action name", "type": "text", "validate": "kebab", "default": "my-action" }
+  ],
+  "files": [
+    { "path": "actions/${actionName}/index.js", "template": "action.js" }
+  ],
+  "postNote": "Register the action in app.config.yaml under runtimeManifest.packages.<pkg>.actions.${actionName} (function: actions/${actionName}/index.js). Then `aio app dev` / `aio app deploy`."
+}

@@ -31,6 +31,21 @@ export function validateAll(root = path.resolve(__dirname, '..')) {
 				if (!row.sourceRef) errors.push(`${productId}/${file}@${v}: missing sourceRef`);
 			}
 		}
+		// Class B/C generators (slim manifests)
+		const gd = path.join(dir, 'generators');
+		if (exists(gd)) {
+			for (const file of fs.readdirSync(gd).filter(f => f.endsWith('.gen.json'))) {
+				const gen = readJson(path.join(gd, file), errors, `${productId}/${file}`);
+				if (!gen) continue;
+				if (!['B', 'C'].includes(gen.class)) errors.push(`${productId}/${file}: class must be B or C`);
+				if (!Array.isArray(gen.files) || gen.files.length === 0) errors.push(`${productId}/${file}: no files`);
+				for (const f of gen.files ?? []) {
+					const tpl = findTpl(path.join(gd, 'templates'), f.template);
+					if (!tpl) errors.push(`${productId}/${file}: missing template ${f.template}`);
+				}
+				if (gen.class === 'C' && !gen.provisioning) errors.push(`${productId}/${file}: Class C needs a provisioning block`);
+			}
+		}
 		if (exists(flowDir)) {
 			for (const file of fs.readdirSync(flowDir).filter(f => f.endsWith('.flow.json'))) {
 				const flow = readJson(path.join(flowDir, file), errors, `${productId}/${file}`);
@@ -48,6 +63,7 @@ function readJson(p, errors, label) {
 	catch (e) { errors.push(`${label}: invalid JSON (${e.message})`); return null; }
 }
 function exists(p) { try { fs.accessSync(p); return true; } catch { return false; } }
+function findTpl(dir, name) { if (!exists(dir)) return null; for (const sub of fs.readdirSync(dir)) { const p = path.join(dir, sub, name); if (exists(p)) return p; } return null; }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
 	const errs = validateAll();

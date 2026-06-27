@@ -1,0 +1,17 @@
+{
+  "id": "eds.block",
+  "label": "EDS Block",
+  "class": "B",
+  "pack": "eds",
+  "applicability": "n/a",
+  "detect": "fstab.yaml",
+  "fields": [
+    { "id": "blockName", "label": "Block name", "type": "text", "validate": "kebab", "default": "my-block" }
+  ],
+  "files": [
+    { "path": "blocks/${blockName}/${blockName}.js", "template": "block.js" },
+    { "path": "blocks/${blockName}/${blockName}.css", "template": "block.css" },
+    { "path": "blocks/${blockName}/README.md", "template": "README.md" }
+  ],
+  "postNote": "Add the block to a document by naming a table after it. The decorate() default export receives the block element."
+}

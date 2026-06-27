@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/generator.schema.json",
+  "title": "In-project generator (slim manifest — Class B/C)",
+  "description": "A <id>.gen.json under products/<id>/generators/. Class B = file emitter (fields + file templates). Class C = integration/service connector (+ a provisioning check before the write). NO requires graph, NO host bootstrap — these run inside an EXISTING project (invoked from the Assistant, not Forge). The slim-manifest engine path interpolates ${field} into file paths + template bodies and writes them.",
+  "type": "object",
+  "required": ["id", "label", "class", "pack", "fields", "files"],
+  "properties": {
+    "id": { "type": "string", "description": "e.g. eds.block, commerce-saas.api-mesh-source" },
+    "label": { "type": "string" },
+    "class": { "enum": ["B", "C"], "description": "B = file emitter; C = integration/service connector" },
+    "pack": { "type": "string", "description": "owning product, e.g. eds, app-builder, commerce-saas, commerce" },
+    "applicability": { "type": "string", "description": "saas | on-prem | both | n/a" },
+    "detect": { "type": "string", "description": "optional: a marker that gates the generator to a matching workspace, e.g. fstab.yaml for EDS" },
+    "provisioning": {
+      "type": "object",
+      "description": "Class C only: an Adobe service that must be enabled before the generated config is useful. Surfaced as a check + help link before the write.",
+      "properties": {
+        "label": { "type": "string" },
+        "check": { "type": "string", "description": "how to verify (e.g. cli:aio console ... / a docs link)" },
+        "help": { "type": "string" }
+      }
+    },
+    "fields": {
+      "type": "array",
+      "description": "user inputs; ${id} is interpolated into file paths + template bodies",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "type"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "type": { "enum": ["text", "select"] },
+          "options": { "type": "array", "items": { "type": "string" } },
+          "default": { "type": "string" },
+          "validate": { "type": "string", "description": "e.g. identifier · kebab · non-empty" }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "description": "files to emit. `path` + `template` are source refs; the build inlines the template body as `content`. `merge:true` means merge into an existing file (e.g. mesh.json) rather than create.",
+      "items": {
+        "type": "object",
+        "required": ["path", "template"],
+        "properties": {
+          "path": { "type": "string", "description": "target path, ${field} interpolated, relative to project root" },
+          "template": { "type": "string", "description": "template file under templates/<gen-id>/" },
+          "merge": { "type": "boolean", "description": "merge into an existing file instead of create (fails-safe: never overwrite)" }
+        }
+      }
+    },
+    "postNote": { "type": "string", "description": "shown after generation (next steps)" }
+  }
+}

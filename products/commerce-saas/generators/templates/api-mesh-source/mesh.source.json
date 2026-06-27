@@ -1,0 +1,14 @@
+{
+  "meshConfig": {
+    "sources": [
+      {
+        "name": "${sourceName}",
+        "handler": {
+          "graphql": {
+            "endpoint": "${endpoint}"
+          }
+        }
+      }
+    ]
+  }
+}

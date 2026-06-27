@@ -1,0 +1,21 @@
+{
+  "id": "commerce-saas.api-mesh-source",
+  "label": "API Mesh source",
+  "class": "C",
+  "pack": "commerce-saas",
+  "applicability": "both",
+  "detect": "mesh.json",
+  "provisioning": {
+    "label": "API Mesh",
+    "check": "cli:aio api-mesh:status",
+    "help": "Requires an Adobe I/O project with API Mesh provisioned. https://developer.adobe.com/graphql-mesh-gateway/"
+  },
+  "fields": [
+    { "id": "sourceName", "label": "Source name", "type": "text", "validate": "identifier", "default": "MyCommerceSource" },
+    { "id": "endpoint", "label": "GraphQL/REST endpoint", "type": "text", "default": "https://<your-commerce>/graphql" }
+  ],
+  "files": [
+    { "path": "mesh.json", "template": "mesh.source.json", "merge": true }
+  ],
+  "postNote": "Run `aio api-mesh update mesh.json` to apply. Secrets/keys belong in .env / runtime params, never inline in mesh.json (commerce-saas/mesh-secrets-in-env)."
+}

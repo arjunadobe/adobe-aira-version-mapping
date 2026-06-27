@@ -1,0 +1,9 @@
+/* ${blockName} block styles — scoped to .${blockName} (eds/block-css-scope). */
+.${blockName} {
+  display: grid;
+  gap: var(--spacing-m, 16px);
+}
+
+.${blockName} .${blockName}-row {
+  /* row styles */
+}

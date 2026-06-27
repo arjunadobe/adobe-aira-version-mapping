@@ -8,6 +8,7 @@
     "refresh": "node scripts/refresh.mjs",
     "refresh:force": "node scripts/refresh.mjs --force",
     "validate": "node scripts/validate.mjs",
-    "build": "node scripts/build.mjs"
+    "build:generators": "node scripts/build-generators.mjs",
+    "build": "node scripts/build.mjs && node scripts/build-generators.mjs"
   }
 }
