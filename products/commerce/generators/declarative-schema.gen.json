@@ -11,7 +11,7 @@
     { "id": "tableName", "label": "Table name", "type": "text", "validate": "identifier", "default": "vendor_module_entity" }
   ],
   "files": [
-    { "path": "app/code/${vendor}/${module}/etc/db_schema.xml", "template": "db_schema.xml" }
+    { "path": "app/code/${vendor}/${module}/etc/db_schema.xml", "template": "db_schema.xml", "xmlMerge": { "parent": "schema", "idAttr": "name", "rootTag": "schema", "rootAttrs": { "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation": "urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd" } } }
   ],
-  "postNote": "Declarative schema over install/upgrade scripts (commerce/declarative-schema). Apply: bin/magento setup:upgrade. Generate the whitelist: bin/magento setup:db-declaration:generate-whitelist --module-name=${vendor}_${module}. (Create-only — extend an existing db_schema.xml by hand.)"
+  "postNote": "Declarative schema over install/upgrade scripts (commerce/declarative-schema). The <table> is merged into an existing db_schema.xml (idempotent, deduped by table name); a new file is created with the schema root if absent. Apply: bin/magento setup:upgrade. Generate the whitelist: bin/magento setup:db-declaration:generate-whitelist --module-name=${vendor}_${module}."
 }

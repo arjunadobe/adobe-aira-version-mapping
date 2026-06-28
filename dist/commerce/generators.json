@@ -172,10 +172,19 @@
         {
           "path": "app/code/${vendor}/${module}/etc/db_schema.xml",
           "merge": false,
-          "content": "<?xml version=\"1.0\"?>\n<schema xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n        xsi:noNamespaceSchemaLocation=\"urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd\">\n    <table name=\"${tableName}\" resource=\"default\" engine=\"innodb\" comment=\"${tableName}\">\n        <column xsi:type=\"int\" name=\"entity_id\" unsigned=\"true\" nullable=\"false\" identity=\"true\" comment=\"ID\"/>\n        <column xsi:type=\"varchar\" name=\"title\" length=\"255\" nullable=\"true\" comment=\"Title\"/>\n        <column xsi:type=\"timestamp\" name=\"created_at\" on_create=\"set_current_timestamp\" nullable=\"false\" comment=\"Created At\"/>\n        <constraint xsi:type=\"primary\" referenceId=\"PRIMARY\">\n            <column name=\"entity_id\"/>\n        </constraint>\n    </table>\n</schema>\n"
+          "content": "<table name=\"${tableName}\" resource=\"default\" engine=\"innodb\" comment=\"${tableName}\">\n    <column xsi:type=\"int\" name=\"entity_id\" unsigned=\"true\" nullable=\"false\" identity=\"true\" comment=\"ID\"/>\n    <column xsi:type=\"varchar\" name=\"title\" length=\"255\" nullable=\"true\" comment=\"Title\"/>\n    <column xsi:type=\"timestamp\" name=\"created_at\" on_create=\"set_current_timestamp\" nullable=\"false\" comment=\"Created At\"/>\n    <constraint xsi:type=\"primary\" referenceId=\"PRIMARY\">\n        <column name=\"entity_id\"/>\n    </constraint>\n</table>\n",
+          "xmlMerge": {
+            "parent": "schema",
+            "idAttr": "name",
+            "rootTag": "schema",
+            "rootAttrs": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:noNamespaceSchemaLocation": "urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd"
+            }
+          }
         }
       ],
-      "postNote": "Declarative schema over install/upgrade scripts (commerce/declarative-schema). Apply: bin/magento setup:upgrade. Generate the whitelist: bin/magento setup:db-declaration:generate-whitelist --module-name=${vendor}_${module}. (Create-only — extend an existing db_schema.xml by hand.)"
+      "postNote": "Declarative schema over install/upgrade scripts (commerce/declarative-schema). The <table> is merged into an existing db_schema.xml (idempotent, deduped by table name); a new file is created with the schema root if absent. Apply: bin/magento setup:upgrade. Generate the whitelist: bin/magento setup:db-declaration:generate-whitelist --module-name=${vendor}_${module}."
     },
     {
       "id": "commerce.graphql-resolver",
@@ -311,9 +320,19 @@
           "path": "app/code/${vendor}/${module}/Observer/${observerName}.php",
           "merge": false,
           "content": "<?php\ndeclare(strict_types=1);\n\nnamespace ${vendor}\\${module}\\Observer;\n\nuse Magento\\Framework\\Event\\Observer;\nuse Magento\\Framework\\Event\\ObserverInterface;\n\nclass ${observerName} implements ObserverInterface\n{\n    public function execute(Observer $observer): void\n    {\n        // $event = $observer->getEvent(); handle ${event}\n    }\n}\n"
+        },
+        {
+          "path": "app/code/${vendor}/${module}/etc/events.xml",
+          "merge": false,
+          "content": "<event name=\"${event}\">\n    <observer name=\"${vendor}_${module}_${observerName}\" instance=\"${vendor}\\${module}\\Observer\\${observerName}\"/>\n</event>\n",
+          "xmlMerge": {
+            "parent": "config",
+            "idAttr": "name",
+            "rootTag": "config"
+          }
         }
       ],
-      "postNote": "Register in etc/events.xml (or etc/<area>/events.xml) — add: <event name=\"${event}\"><observer name=\"${vendor}_${module}_${observerName}\" instance=\"${vendor}\\${module}\\Observer\\${observerName}\"/></event>. (XML hand-merged — JSON-only engine merge.)"
+      "postNote": "Registered in etc/events.xml automatically (an <event name=\"${event}\"> with your <observer>). NOTE: for MULTIPLE observers on the SAME event, add the extra <observer> under the existing <event> by hand (the merge dedups by event name). Use etc/<area>/events.xml for area-specific events."
     },
     {
       "id": "commerce.plugin",
@@ -343,6 +362,13 @@
           "type": "text",
           "validate": "identifier",
           "default": "MyPlugin"
+        },
+        {
+          "id": "targetClass",
+          "label": "Target class/interface (FQN)",
+          "type": "text",
+          "validate": "non-empty",
+          "default": "Magento\\Catalog\\Api\\ProductRepositoryInterface"
         }
       ],
       "files": [
@@ -350,13 +376,23 @@
           "path": "app/code/${vendor}/${module}/Plugin/${pluginName}.php",
           "merge": false,
           "content": "<?php\ndeclare(strict_types=1);\n\nnamespace ${vendor}\\${module}\\Plugin;\n\nclass ${pluginName}\n{\n    // before / around / after — implement the one(s) you need.\n    // public function beforeMethodName($subject, $arg) { return [$arg]; }\n    // public function afterMethodName($subject, $result) { return $result; }\n}\n"
+        },
+        {
+          "path": "app/code/${vendor}/${module}/etc/di.xml",
+          "merge": false,
+          "content": "<type name=\"${targetClass}\">\n    <plugin name=\"${vendor}_${module}_${pluginName}\" type=\"${vendor}\\${module}\\Plugin\\${pluginName}\" sortOrder=\"10\"/>\n</type>\n",
+          "xmlMerge": {
+            "parent": "config",
+            "idAttr": "name",
+            "rootTag": "config"
+          }
         }
       ],
-      "postNote": "Register the plugin in app/code/${vendor}/${module}/etc/di.xml — add: <type name=\"Target\\Class\"><plugin name=\"${vendor}_${module}_${pluginName}\" type=\"${vendor}\\${module}\\Plugin\\${pluginName}\"/></type>. (XML config is hand-merged — the engine's deep-merge is JSON-only.) sortOrder required if you have multiple plugins (commerce/plugin-sort-order)."
+      "postNote": "Registered in etc/di.xml automatically (a <type name=\"${targetClass}\"> with your <plugin>). NOTE: for MULTIPLE plugins on the SAME target class, add the extra <plugin> under the existing <type> by hand (the merge dedups by target name). sortOrder when conflicting (commerce/plugin-sort-order)."
     }
   ],
   "_integrity": {
-    "sha256": "aa9e281b980ab8306f8fdd68b81c9d38e70210464bb335b9e72fd81e4de26f5d",
-    "signature": "STUB:aa9e281b980ab830"
+    "sha256": "970b62f597e207e0a3dda51620be9cc1d31df75d0fe2edbefb443a8792d5b35c",
+    "signature": "STUB:970b62f597e207e0"
   }
 }

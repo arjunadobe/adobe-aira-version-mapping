@@ -45,8 +45,19 @@
         "required": ["path", "template"],
         "properties": {
           "path": { "type": "string", "description": "target path, ${field} interpolated, relative to project root" },
-          "template": { "type": "string", "description": "template file under templates/<gen-id>/" },
-          "merge": { "type": "boolean", "description": "merge into an existing file instead of create (fails-safe: never overwrite)" }
+          "template": { "type": "string", "description": "template file under templates/<gen-id>/. For xmlMerge, this is the XML node FRAGMENT to insert." },
+          "merge": { "type": "boolean", "description": "deep-merge JSON into an existing file instead of create (fail-safe: never overwrite)" },
+          "xmlMerge": {
+            "type": "object",
+            "description": "insert the XML fragment (content) under an existing config file's parent chain, idempotent by idAttr, insert-only. Takes precedence over merge. Only works when the node sits directly under a non-attributed parent (di.xml/events.xml/db_schema.xml); attributed-parent configs (crontab group id, routes router id) use a postNote instead.",
+            "required": ["parent", "idAttr", "rootTag"],
+            "properties": {
+              "parent": { "type": "string", "description": "slash-separated tag chain the fragment is inserted under; first segment == rootTag" },
+              "idAttr": { "type": "string", "description": "attribute on the fragment's root node used for sibling de-dup" },
+              "rootTag": { "type": "string", "description": "root element when creating the file from scratch" },
+              "rootAttrs": { "type": "object", "additionalProperties": { "type": "string" }, "description": "explicit root attrs; else the engine's known Magento map by filename (di/events/crontab/routes/webapi/acl). Needed for db_schema.xml (not in the map)." }
+            }
+          }
         }
       }
     },

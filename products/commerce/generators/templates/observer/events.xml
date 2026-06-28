@@ -1,0 +1,3 @@
+<event name="${event}">
+    <observer name="${vendor}_${module}_${observerName}" instance="${vendor}\${module}\Observer\${observerName}"/>
+</event>

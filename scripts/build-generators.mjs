@@ -35,7 +35,9 @@ for (const [productId, entry] of Object.entries(registry.products)) {
 				const found = findTemplate(altDir, f.template);
 				content = found ? fs.readFileSync(found, 'utf8') : `/* MISSING TEMPLATE: ${f.template} */`;
 			}
-			return { path: f.path, merge: !!f.merge, content };
+			const out = { path: f.path, merge: !!f.merge, content };
+			if (f.xmlMerge) out.xmlMerge = f.xmlMerge;   // XML node-insert spec (passthrough)
+			return out;
 		});
 		generators.push(gen);
 		total++;

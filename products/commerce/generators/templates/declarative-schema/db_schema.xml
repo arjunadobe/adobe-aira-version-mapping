@@ -1,12 +1,8 @@
-<?xml version="1.0"?>
-<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-    <table name="${tableName}" resource="default" engine="innodb" comment="${tableName}">
-        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="ID"/>
-        <column xsi:type="varchar" name="title" length="255" nullable="true" comment="Title"/>
-        <column xsi:type="timestamp" name="created_at" on_create="set_current_timestamp" nullable="false" comment="Created At"/>
-        <constraint xsi:type="primary" referenceId="PRIMARY">
-            <column name="entity_id"/>
-        </constraint>
-    </table>
-</schema>
+<table name="${tableName}" resource="default" engine="innodb" comment="${tableName}">
+    <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+    <column xsi:type="varchar" name="title" length="255" nullable="true" comment="Title"/>
+    <column xsi:type="timestamp" name="created_at" on_create="set_current_timestamp" nullable="false" comment="Created At"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+        <column name="entity_id"/>
+    </constraint>
+</table>

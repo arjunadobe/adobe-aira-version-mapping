@@ -8,10 +8,12 @@
   "fields": [
     { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
     { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
-    { "id": "pluginName", "label": "Plugin class", "type": "text", "validate": "identifier", "default": "MyPlugin" }
+    { "id": "pluginName", "label": "Plugin class", "type": "text", "validate": "identifier", "default": "MyPlugin" },
+    { "id": "targetClass", "label": "Target class/interface (FQN)", "type": "text", "validate": "non-empty", "default": "Magento\\Catalog\\Api\\ProductRepositoryInterface" }
   ],
   "files": [
-    { "path": "app/code/${vendor}/${module}/Plugin/${pluginName}.php", "template": "plugin.php" }
+    { "path": "app/code/${vendor}/${module}/Plugin/${pluginName}.php", "template": "plugin.php" },
+    { "path": "app/code/${vendor}/${module}/etc/di.xml", "template": "di.xml", "xmlMerge": { "parent": "config", "idAttr": "name", "rootTag": "config" } }
   ],
-  "postNote": "Register the plugin in app/code/${vendor}/${module}/etc/di.xml — add: <type name=\"Target\\Class\"><plugin name=\"${vendor}_${module}_${pluginName}\" type=\"${vendor}\\${module}\\Plugin\\${pluginName}\"/></type>. (XML config is hand-merged — the engine's deep-merge is JSON-only.) sortOrder required if you have multiple plugins (commerce/plugin-sort-order)."
+  "postNote": "Registered in etc/di.xml automatically (a <type name=\"${targetClass}\"> with your <plugin>). NOTE: for MULTIPLE plugins on the SAME target class, add the extra <plugin> under the existing <type> by hand (the merge dedups by target name). sortOrder when conflicting (commerce/plugin-sort-order)."
 }
