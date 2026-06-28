@@ -1,0 +1,15 @@
+{
+  "id": "eds.auto-block",
+  "label": "Auto-block",
+  "class": "B",
+  "pack": "eds",
+  "applicability": "n/a",
+  "detect": "fstab.yaml",
+  "fields": [
+    { "id": "blockName", "label": "Target block", "type": "text", "validate": "kebab", "default": "hero" }
+  ],
+  "files": [
+    { "path": "scripts/auto-blocks/${blockName}.js", "template": "auto-block.js" }
+  ],
+  "postNote": "Auto-blocking builds a block from page content (no authoring). Call this from buildAutoBlocks(main) in scripts/scripts.js."
+}

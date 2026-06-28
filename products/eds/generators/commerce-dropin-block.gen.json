@@ -1,0 +1,17 @@
+{
+  "id": "eds.commerce-dropin-block",
+  "label": "Commerce drop-in block",
+  "class": "B",
+  "pack": "eds",
+  "applicability": "saas",
+  "detect": "fstab.yaml",
+  "fields": [
+    { "id": "blockName", "label": "Block name", "type": "text", "validate": "kebab", "default": "product-details" },
+    { "id": "dropin", "label": "Drop-in", "type": "select", "options": ["storefront-pdp", "storefront-cart", "storefront-checkout", "storefront-product-discovery", "storefront-recommendations", "storefront-account", "storefront-order"], "default": "storefront-pdp" }
+  ],
+  "files": [
+    { "path": "blocks/${blockName}/${blockName}.js", "template": "block.js" },
+    { "path": "blocks/${blockName}/${blockName}.css", "template": "block.css" }
+  ],
+  "postNote": "Bridges EDS ↔ Commerce SaaS: this block mounts a @dropins/${dropin} component. The aem-boilerplate-commerce postinstall provides the drop-in packages; see its docs for the exact container import."
+}

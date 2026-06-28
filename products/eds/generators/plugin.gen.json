@@ -1,0 +1,15 @@
+{
+  "id": "eds.plugin",
+  "label": "EDS plugin",
+  "class": "B",
+  "pack": "eds",
+  "applicability": "n/a",
+  "detect": "fstab.yaml",
+  "fields": [
+    { "id": "pluginName", "label": "Plugin name", "type": "text", "validate": "identifier", "default": "myPlugin" }
+  ],
+  "files": [
+    { "path": "plugins/${pluginName}/${pluginName}.js", "template": "plugin.js" }
+  ],
+  "postNote": "Load the plugin from scripts/scripts.js (e.g. via the plugin loader / loadPlugin) at the lazy or eager phase as appropriate."
+}
