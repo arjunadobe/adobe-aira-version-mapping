@@ -1,0 +1,9 @@
+<widget id="${vendor}_${module}_${widgetName}" class="${vendor}\${module}\Block\Widget\${widgetName}">
+    <label>${widgetName}</label>
+    <description>${widgetName} widget</description>
+    <parameters>
+        <parameter name="title" xsi:type="text" visible="true" sort_order="10">
+            <label>Title</label>
+        </parameter>
+    </parameters>
+</widget>

@@ -1,0 +1,4 @@
+<indexer id="${indexerId}" view_id="${indexerId}" class="${vendor}\${module}\Model\Indexer\${indexerName}">
+    <title translate="true">${indexerName}</title>
+    <description translate="true">${indexerName} indexer</description>
+</indexer>

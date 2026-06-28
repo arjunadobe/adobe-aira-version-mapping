@@ -1,0 +1,21 @@
+{
+  "id": "commerce.indexer",
+  "label": "Indexer",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "indexerName", "label": "Indexer class", "type": "text", "validate": "identifier", "default": "MyIndexer" },
+    { "id": "indexerId", "label": "Indexer id", "type": "text", "validate": "identifier", "default": "vendor_module_index" },
+    { "id": "sourceTable", "label": "Subscribed table", "type": "text", "validate": "identifier", "default": "vendor_module_entity" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Model/Indexer/${indexerName}.php", "template": "indexer.php" },
+    { "path": "app/code/${vendor}/${module}/etc/indexer.xml", "template": "indexer.xml", "xmlMerge": { "parent": "config", "idAttr": "id", "rootTag": "config", "rootAttrs": { "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation": "urn:magento:framework:Indexer/etc/indexer.xsd" } } },
+    { "path": "app/code/${vendor}/${module}/etc/mview.xml", "template": "mview.xml", "xmlMerge": { "parent": "config", "idAttr": "id", "rootTag": "config", "rootAttrs": { "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation": "urn:magento:framework:Mview/etc/mview.xsd" } } }
+  ],
+  "postNote": "Registered in etc/indexer.xml + etc/mview.xml (deduped by id). Reindex: bin/magento indexer:reindex ${indexerId}. Implement the executeFull/executeList/executeRow bodies."
+}

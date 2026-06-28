@@ -1,0 +1,19 @@
+{
+  "id": "commerce.widget",
+  "label": "Frontend widget",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "widgetName", "label": "Widget class", "type": "text", "validate": "identifier", "default": "MyWidget" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Block/Widget/${widgetName}.php", "template": "widget.php" },
+    { "path": "app/code/${vendor}/${module}/view/frontend/templates/widget/${widgetName}.phtml", "template": "widget.phtml" },
+    { "path": "app/code/${vendor}/${module}/etc/widget.xml", "template": "widget.xml", "xmlMerge": { "parent": "widgets", "idAttr": "id", "rootTag": "widgets", "rootAttrs": { "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation": "urn:magento:module:Magento_Widget:etc/widget.xsd" } } }
+  ],
+  "postNote": "Registered in etc/widget.xml (deduped by widget id). The widget is now selectable in Admin > Content > Widgets. Add more <parameter> entries in widget.xml as needed."
+}

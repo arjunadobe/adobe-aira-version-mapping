@@ -1,0 +1,22 @@
+{
+  "id": "commerce.rest-endpoint",
+  "label": "REST API endpoint",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "resourceName", "label": "Resource", "type": "text", "validate": "identifier", "default": "Item" },
+    { "id": "url", "label": "Route URL", "type": "text", "default": "/V1/vendor/items" },
+    { "id": "httpMethod", "label": "HTTP method", "type": "select", "options": ["GET", "POST", "PUT", "DELETE"], "default": "GET" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Api/${resourceName}RepositoryInterface.php", "template": "interface.php" },
+    { "path": "app/code/${vendor}/${module}/Model/${resourceName}Repository.php", "template": "repository.php" },
+    { "path": "app/code/${vendor}/${module}/etc/webapi.xml", "template": "webapi.xml", "xmlMerge": { "parent": "routes", "idAttr": "url", "rootTag": "routes" } },
+    { "path": "app/code/${vendor}/${module}/etc/di.xml", "template": "di.xml", "xmlMerge": { "parent": "config", "idAttr": "for", "rootTag": "config" } }
+  ],
+  "postNote": "Route registered in etc/webapi.xml + the interface->model preference in etc/di.xml. NOTE: webapi.xml dedups by url only, so two methods on the SAME url need the second <route> by hand. The route is open (anonymous); tighten <resources> for auth. Implement getList()."
+}

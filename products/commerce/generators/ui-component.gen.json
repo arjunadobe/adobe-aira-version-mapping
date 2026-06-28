@@ -1,0 +1,17 @@
+{
+  "id": "commerce.ui-component",
+  "label": "Admin UI listing component",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "componentName", "label": "Component name", "type": "text", "validate": "identifier", "default": "vendor_module_listing" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/view/adminhtml/ui_component/${componentName}.xml", "template": "listing.xml" }
+  ],
+  "postNote": "Listing UI component created (create-only). Wire a grid collection in etc/di.xml: a <virtualType ... type=\"Magento\\Framework\\View\\Element\\UiComponent\\DataProvider\\CollectionFactory\"> with an item for \"${componentName}_data_source\" mapped to your resource-model Collection (hand-merge). Render it from a controller/layout."
+}

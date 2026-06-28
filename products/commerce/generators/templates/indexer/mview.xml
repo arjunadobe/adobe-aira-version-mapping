@@ -1,0 +1,5 @@
+<view id="${indexerId}" class="Magento\Framework\Mview\View" group="indexer">
+    <subscriptions>
+        <table name="${sourceTable}" entity_column="entity_id"/>
+    </subscriptions>
+</view>

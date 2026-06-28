@@ -1,0 +1,1 @@
+<consumer name="${consumerName}" queue="${queueName}" connection="db" consumerInstance="Magento\Framework\MessageQueue\Consumer" handler="${vendor}\${module}\Model\Queue\${handlerName}::process"/>

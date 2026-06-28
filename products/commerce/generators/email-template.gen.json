@@ -1,0 +1,19 @@
+{
+  "id": "commerce.email-template",
+  "label": "Transactional email template",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "templateId", "label": "Template id", "type": "text", "validate": "identifier", "default": "vendor_module_email" },
+    { "id": "templateLabel", "label": "Template label", "type": "text", "default": "My Email" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/view/frontend/email/${templateId}.html", "template": "email.html" },
+    { "path": "app/code/${vendor}/${module}/etc/email_templates.xml", "template": "email_templates.xml", "xmlMerge": { "parent": "config", "idAttr": "id", "rootTag": "config", "rootAttrs": { "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation": "urn:magento:module:Magento_Email:etc/email_templates.xsd" } } }
+  ],
+  "postNote": "Registered in etc/email_templates.xml (deduped by template id). Send it via the TransportBuilder using identifier \"${templateId}\". Edit the .html body + @vars as needed."
+}

@@ -1,0 +1,1 @@
+<template id="${templateId}" label="${templateLabel}" file="${templateId}.html" type="html" module="${vendor}_${module}" area="frontend"/>

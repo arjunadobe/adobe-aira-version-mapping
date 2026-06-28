@@ -187,6 +187,65 @@
       "postNote": "Declarative schema over install/upgrade scripts (commerce/declarative-schema). The <table> is merged into an existing db_schema.xml (idempotent, deduped by table name); a new file is created with the schema root if absent. Apply: bin/magento setup:upgrade. Generate the whitelist: bin/magento setup:db-declaration:generate-whitelist --module-name=${vendor}_${module}."
     },
     {
+      "id": "commerce.email-template",
+      "label": "Transactional email template",
+      "class": "B",
+      "pack": "commerce",
+      "applicability": "on-prem",
+      "detect": "bin/magento",
+      "fields": [
+        {
+          "id": "vendor",
+          "label": "Vendor",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Vendor"
+        },
+        {
+          "id": "module",
+          "label": "Module",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Module"
+        },
+        {
+          "id": "templateId",
+          "label": "Template id",
+          "type": "text",
+          "validate": "identifier",
+          "default": "vendor_module_email"
+        },
+        {
+          "id": "templateLabel",
+          "label": "Template label",
+          "type": "text",
+          "default": "My Email"
+        }
+      ],
+      "files": [
+        {
+          "path": "app/code/${vendor}/${module}/view/frontend/email/${templateId}.html",
+          "merge": false,
+          "content": "<!--@subject ${templateLabel} @-->\n<!--@vars {\"var data.name\":\"Customer Name\"} @-->\n{{template config_path=\"design/email/header_template\"}}\n<p>{{trans \"Hello, %name\" name=$data.name}}</p>\n<p>{{trans \"This is the ${templateLabel} email.\"}}</p>\n{{template config_path=\"design/email/footer_template\"}}\n"
+        },
+        {
+          "path": "app/code/${vendor}/${module}/etc/email_templates.xml",
+          "merge": false,
+          "content": "<template id=\"${templateId}\" label=\"${templateLabel}\" file=\"${templateId}.html\" type=\"html\" module=\"${vendor}_${module}\" area=\"frontend\"/>\n",
+          "xmlMerge": {
+            "parent": "config",
+            "idAttr": "id",
+            "rootTag": "config",
+            "rootAttrs": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:noNamespaceSchemaLocation": "urn:magento:module:Magento_Email:etc/email_templates.xsd"
+            }
+          }
+        }
+      ],
+      "postNote": "Registered in etc/email_templates.xml (deduped by template id). Send it via the TransportBuilder using identifier \"${templateId}\". Edit the .html body + @vars as needed."
+    },
+    {
       "id": "commerce.graphql-resolver",
       "label": "GraphQL resolver",
       "class": "B",
@@ -238,6 +297,87 @@
       "postNote": "schema.graphqls is create-only — if it already exists, add the field by hand: type Query { ${queryField}: String @resolver(class: \"${vendor}\\\\${module}\\\\Model\\\\Resolver\\\\${resolver}\") }"
     },
     {
+      "id": "commerce.indexer",
+      "label": "Indexer",
+      "class": "B",
+      "pack": "commerce",
+      "applicability": "on-prem",
+      "detect": "bin/magento",
+      "fields": [
+        {
+          "id": "vendor",
+          "label": "Vendor",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Vendor"
+        },
+        {
+          "id": "module",
+          "label": "Module",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Module"
+        },
+        {
+          "id": "indexerName",
+          "label": "Indexer class",
+          "type": "text",
+          "validate": "identifier",
+          "default": "MyIndexer"
+        },
+        {
+          "id": "indexerId",
+          "label": "Indexer id",
+          "type": "text",
+          "validate": "identifier",
+          "default": "vendor_module_index"
+        },
+        {
+          "id": "sourceTable",
+          "label": "Subscribed table",
+          "type": "text",
+          "validate": "identifier",
+          "default": "vendor_module_entity"
+        }
+      ],
+      "files": [
+        {
+          "path": "app/code/${vendor}/${module}/Model/Indexer/${indexerName}.php",
+          "merge": false,
+          "content": "<?php\ndeclare(strict_types=1);\n\nnamespace ${vendor}\\${module}\\Model\\Indexer;\n\nuse Magento\\Framework\\Indexer\\ActionInterface;\nuse Magento\\Framework\\Mview\\ActionInterface as MviewActionInterface;\n\nclass ${indexerName} implements ActionInterface, MviewActionInterface\n{\n    public function executeFull(): void\n    {\n        // rebuild the whole index\n    }\n\n    public function executeList(array $ids): void\n    {\n        // reindex the given ids\n    }\n\n    public function executeRow($id): void\n    {\n        // reindex a single id\n    }\n\n    public function execute($ids): void\n    {\n        $this->executeList((array) $ids);\n    }\n}\n"
+        },
+        {
+          "path": "app/code/${vendor}/${module}/etc/indexer.xml",
+          "merge": false,
+          "content": "<indexer id=\"${indexerId}\" view_id=\"${indexerId}\" class=\"${vendor}\\${module}\\Model\\Indexer\\${indexerName}\">\n    <title translate=\"true\">${indexerName}</title>\n    <description translate=\"true\">${indexerName} indexer</description>\n</indexer>\n",
+          "xmlMerge": {
+            "parent": "config",
+            "idAttr": "id",
+            "rootTag": "config",
+            "rootAttrs": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:noNamespaceSchemaLocation": "urn:magento:framework:Indexer/etc/indexer.xsd"
+            }
+          }
+        },
+        {
+          "path": "app/code/${vendor}/${module}/etc/mview.xml",
+          "merge": false,
+          "content": "<view id=\"${indexerId}\" class=\"Magento\\Framework\\Mview\\View\" group=\"indexer\">\n    <subscriptions>\n        <table name=\"${sourceTable}\" entity_column=\"entity_id\"/>\n    </subscriptions>\n</view>\n",
+          "xmlMerge": {
+            "parent": "config",
+            "idAttr": "id",
+            "rootTag": "config",
+            "rootAttrs": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:noNamespaceSchemaLocation": "urn:magento:framework:Mview/etc/mview.xsd"
+            }
+          }
+        }
+      ],
+      "postNote": "Registered in etc/indexer.xml + etc/mview.xml (deduped by id). Reindex: bin/magento indexer:reindex ${indexerId}. Implement the executeFull/executeList/executeRow bodies."
+    },
+    {
       "id": "commerce.module",
       "label": "Module (Vendor_Module)",
       "class": "B",
@@ -278,6 +418,71 @@
         }
       ],
       "postNote": "Enable with: bin/magento module:enable ${vendor}_${module} && bin/magento setup:upgrade. Then generate components (plugin/observer/controller/...) into this module."
+    },
+    {
+      "id": "commerce.mq-consumer",
+      "label": "Message-queue consumer",
+      "class": "B",
+      "pack": "commerce",
+      "applicability": "on-prem",
+      "detect": "bin/magento",
+      "fields": [
+        {
+          "id": "vendor",
+          "label": "Vendor",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Vendor"
+        },
+        {
+          "id": "module",
+          "label": "Module",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Module"
+        },
+        {
+          "id": "handlerName",
+          "label": "Handler class",
+          "type": "text",
+          "validate": "identifier",
+          "default": "MyConsumer"
+        },
+        {
+          "id": "consumerName",
+          "label": "Consumer name",
+          "type": "text",
+          "default": "vendor.module.consumer"
+        },
+        {
+          "id": "queueName",
+          "label": "Queue name",
+          "type": "text",
+          "default": "vendor.module.queue"
+        }
+      ],
+      "files": [
+        {
+          "path": "app/code/${vendor}/${module}/Model/Queue/${handlerName}.php",
+          "merge": false,
+          "content": "<?php\ndeclare(strict_types=1);\n\nnamespace ${vendor}\\${module}\\Model\\Queue;\n\nclass ${handlerName}\n{\n    /**\n     * @param mixed $message\n     */\n    public function process($message): void\n    {\n        // handle the dequeued $message\n    }\n}\n"
+        },
+        {
+          "path": "app/code/${vendor}/${module}/etc/queue_consumer.xml",
+          "merge": false,
+          "content": "<consumer name=\"${consumerName}\" queue=\"${queueName}\" connection=\"db\" consumerInstance=\"Magento\\Framework\\MessageQueue\\Consumer\" handler=\"${vendor}\\${module}\\Model\\Queue\\${handlerName}::process\"/>\n",
+          "xmlMerge": {
+            "parent": "config",
+            "idAttr": "name",
+            "rootTag": "config",
+            "rootAttrs": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:noNamespaceSchemaLocation": "urn:magento:framework-message-queue:etc/consumer.xsd"
+            }
+          }
+        }
+      ],
+      "postNote": "Consumer registered in etc/queue_consumer.xml (deduped by name). For a full publish/subscribe also add etc/communication.xml, etc/queue_topology.xml + etc/queue_publisher.xml (coordinated topic/exchange values — hand-author). Run: bin/magento queue:consumers:start ${consumerName}."
     },
     {
       "id": "commerce.observer",
@@ -389,10 +594,189 @@
         }
       ],
       "postNote": "Registered in etc/di.xml automatically (a <type name=\"${targetClass}\"> with your <plugin>). NOTE: for MULTIPLE plugins on the SAME target class, add the extra <plugin> under the existing <type> by hand (the merge dedups by target name). sortOrder when conflicting (commerce/plugin-sort-order)."
+    },
+    {
+      "id": "commerce.rest-endpoint",
+      "label": "REST API endpoint",
+      "class": "B",
+      "pack": "commerce",
+      "applicability": "on-prem",
+      "detect": "bin/magento",
+      "fields": [
+        {
+          "id": "vendor",
+          "label": "Vendor",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Vendor"
+        },
+        {
+          "id": "module",
+          "label": "Module",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Module"
+        },
+        {
+          "id": "resourceName",
+          "label": "Resource",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Item"
+        },
+        {
+          "id": "url",
+          "label": "Route URL",
+          "type": "text",
+          "default": "/V1/vendor/items"
+        },
+        {
+          "id": "httpMethod",
+          "label": "HTTP method",
+          "type": "select",
+          "options": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+          ],
+          "default": "GET"
+        }
+      ],
+      "files": [
+        {
+          "path": "app/code/${vendor}/${module}/Api/${resourceName}RepositoryInterface.php",
+          "merge": false,
+          "content": "<?php\ndeclare(strict_types=1);\n\nnamespace ${vendor}\\${module}\\Api;\n\ninterface ${resourceName}RepositoryInterface\n{\n    /**\n     * @return mixed[]\n     */\n    public function getList(): array;\n}\n"
+        },
+        {
+          "path": "app/code/${vendor}/${module}/Model/${resourceName}Repository.php",
+          "merge": false,
+          "content": "<?php\ndeclare(strict_types=1);\n\nnamespace ${vendor}\\${module}\\Model;\n\nuse ${vendor}\\${module}\\Api\\${resourceName}RepositoryInterface;\n\nclass ${resourceName}Repository implements ${resourceName}RepositoryInterface\n{\n    public function getList(): array\n    {\n        return [];\n    }\n}\n"
+        },
+        {
+          "path": "app/code/${vendor}/${module}/etc/webapi.xml",
+          "merge": false,
+          "content": "<route url=\"${url}\" method=\"${httpMethod}\">\n    <service class=\"${vendor}\\${module}\\Api\\${resourceName}RepositoryInterface\" method=\"getList\"/>\n    <resources>\n        <resource ref=\"anonymous\"/>\n    </resources>\n</route>\n",
+          "xmlMerge": {
+            "parent": "routes",
+            "idAttr": "url",
+            "rootTag": "routes"
+          }
+        },
+        {
+          "path": "app/code/${vendor}/${module}/etc/di.xml",
+          "merge": false,
+          "content": "<preference for=\"${vendor}\\${module}\\Api\\${resourceName}RepositoryInterface\" type=\"${vendor}\\${module}\\Model\\${resourceName}Repository\"/>\n",
+          "xmlMerge": {
+            "parent": "config",
+            "idAttr": "for",
+            "rootTag": "config"
+          }
+        }
+      ],
+      "postNote": "Route registered in etc/webapi.xml + the interface->model preference in etc/di.xml. NOTE: webapi.xml dedups by url only, so two methods on the SAME url need the second <route> by hand. The route is open (anonymous); tighten <resources> for auth. Implement getList()."
+    },
+    {
+      "id": "commerce.ui-component",
+      "label": "Admin UI listing component",
+      "class": "B",
+      "pack": "commerce",
+      "applicability": "on-prem",
+      "detect": "bin/magento",
+      "fields": [
+        {
+          "id": "vendor",
+          "label": "Vendor",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Vendor"
+        },
+        {
+          "id": "module",
+          "label": "Module",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Module"
+        },
+        {
+          "id": "componentName",
+          "label": "Component name",
+          "type": "text",
+          "validate": "identifier",
+          "default": "vendor_module_listing"
+        }
+      ],
+      "files": [
+        {
+          "path": "app/code/${vendor}/${module}/view/adminhtml/ui_component/${componentName}.xml",
+          "merge": false,
+          "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<listing xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:noNamespaceSchemaLocation=\"urn:magento:module:Magento_Ui:etc/ui_configuration.xsd\">\n    <argument name=\"data\" xsi:type=\"array\">\n        <item name=\"js_config\" xsi:type=\"array\">\n            <item name=\"provider\" xsi:type=\"string\">${componentName}.${componentName}_data_source</item>\n        </item>\n    </argument>\n    <settings>\n        <spinner>${componentName}_columns</spinner>\n    </settings>\n    <dataSource name=\"${componentName}_data_source\" component=\"Magento_Ui/js/grid/provider\">\n        <settings>\n            <updateUrl path=\"mui/index/render\"/>\n        </settings>\n        <aclResource>${vendor}_${module}::management</aclResource>\n        <dataProvider class=\"Magento\\Framework\\View\\Element\\UiComponent\\DataProvider\\DataProvider\" name=\"${componentName}_data_source\">\n            <settings>\n                <requestFieldName>entity_id</requestFieldName>\n                <primaryFieldName>entity_id</primaryFieldName>\n            </settings>\n        </dataProvider>\n    </dataSource>\n    <columns name=\"${componentName}_columns\">\n        <column name=\"entity_id\">\n            <settings>\n                <label translate=\"true\">ID</label>\n            </settings>\n        </column>\n        <column name=\"title\">\n            <settings>\n                <label translate=\"true\">Title</label>\n            </settings>\n        </column>\n    </columns>\n</listing>\n"
+        }
+      ],
+      "postNote": "Listing UI component created (create-only). Wire a grid collection in etc/di.xml: a <virtualType ... type=\"Magento\\Framework\\View\\Element\\UiComponent\\DataProvider\\CollectionFactory\"> with an item for \"${componentName}_data_source\" mapped to your resource-model Collection (hand-merge). Render it from a controller/layout."
+    },
+    {
+      "id": "commerce.widget",
+      "label": "Frontend widget",
+      "class": "B",
+      "pack": "commerce",
+      "applicability": "on-prem",
+      "detect": "bin/magento",
+      "fields": [
+        {
+          "id": "vendor",
+          "label": "Vendor",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Vendor"
+        },
+        {
+          "id": "module",
+          "label": "Module",
+          "type": "text",
+          "validate": "identifier",
+          "default": "Module"
+        },
+        {
+          "id": "widgetName",
+          "label": "Widget class",
+          "type": "text",
+          "validate": "identifier",
+          "default": "MyWidget"
+        }
+      ],
+      "files": [
+        {
+          "path": "app/code/${vendor}/${module}/Block/Widget/${widgetName}.php",
+          "merge": false,
+          "content": "<?php\ndeclare(strict_types=1);\n\nnamespace ${vendor}\\${module}\\Block\\Widget;\n\nuse Magento\\Framework\\View\\Element\\Template;\nuse Magento\\Widget\\Block\\BlockInterface;\n\nclass ${widgetName} extends Template implements BlockInterface\n{\n    protected $_template = '${vendor}_${module}::widget/${widgetName}.phtml';\n}\n"
+        },
+        {
+          "path": "app/code/${vendor}/${module}/view/frontend/templates/widget/${widgetName}.phtml",
+          "merge": false,
+          "content": "<?php /** @var \\${vendor}\\${module}\\Block\\Widget\\${widgetName} $block */ ?>\n<div class=\"widget ${widgetName}\">\n    <?= $block->escapeHtml($block->getData('title')) ?>\n</div>\n"
+        },
+        {
+          "path": "app/code/${vendor}/${module}/etc/widget.xml",
+          "merge": false,
+          "content": "<widget id=\"${vendor}_${module}_${widgetName}\" class=\"${vendor}\\${module}\\Block\\Widget\\${widgetName}\">\n    <label>${widgetName}</label>\n    <description>${widgetName} widget</description>\n    <parameters>\n        <parameter name=\"title\" xsi:type=\"text\" visible=\"true\" sort_order=\"10\">\n            <label>Title</label>\n        </parameter>\n    </parameters>\n</widget>\n",
+          "xmlMerge": {
+            "parent": "widgets",
+            "idAttr": "id",
+            "rootTag": "widgets",
+            "rootAttrs": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:noNamespaceSchemaLocation": "urn:magento:module:Magento_Widget:etc/widget.xsd"
+            }
+          }
+        }
+      ],
+      "postNote": "Registered in etc/widget.xml (deduped by widget id). The widget is now selectable in Admin > Content > Widgets. Add more <parameter> entries in widget.xml as needed."
     }
   ],
   "_integrity": {
-    "sha256": "970b62f597e207e0a3dda51620be9cc1d31df75d0fe2edbefb443a8792d5b35c",
-    "signature": "STUB:970b62f597e207e0"
+    "sha256": "38b0d8fda208a686fd3f461100f5f483b8b8257e1a031b1c1f1427990a179d15",
+    "signature": "STUB:38b0d8fda208a686"
   }
 }

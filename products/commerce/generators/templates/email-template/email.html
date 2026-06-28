@@ -1,0 +1,6 @@
+<!--@subject ${templateLabel} @-->
+<!--@vars {"var data.name":"Customer Name"} @-->
+{{template config_path="design/email/header_template"}}
+<p>{{trans "Hello, %name" name=$data.name}}</p>
+<p>{{trans "This is the ${templateLabel} email."}}</p>
+{{template config_path="design/email/footer_template"}}

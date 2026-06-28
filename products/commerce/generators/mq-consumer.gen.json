@@ -1,0 +1,20 @@
+{
+  "id": "commerce.mq-consumer",
+  "label": "Message-queue consumer",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "handlerName", "label": "Handler class", "type": "text", "validate": "identifier", "default": "MyConsumer" },
+    { "id": "consumerName", "label": "Consumer name", "type": "text", "default": "vendor.module.consumer" },
+    { "id": "queueName", "label": "Queue name", "type": "text", "default": "vendor.module.queue" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Model/Queue/${handlerName}.php", "template": "consumer.php" },
+    { "path": "app/code/${vendor}/${module}/etc/queue_consumer.xml", "template": "queue_consumer.xml", "xmlMerge": { "parent": "config", "idAttr": "name", "rootTag": "config", "rootAttrs": { "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation": "urn:magento:framework-message-queue:etc/consumer.xsd" } } }
+  ],
+  "postNote": "Consumer registered in etc/queue_consumer.xml (deduped by name). For a full publish/subscribe also add etc/communication.xml, etc/queue_topology.xml + etc/queue_publisher.xml (coordinated topic/exchange values — hand-author). Run: bin/magento queue:consumers:start ${consumerName}."
+}

@@ -1,0 +1,6 @@
+<route url="${url}" method="${httpMethod}">
+    <service class="${vendor}\${module}\Api\${resourceName}RepositoryInterface" method="getList"/>
+    <resources>
+        <resource ref="anonymous"/>
+    </resources>
+</route>

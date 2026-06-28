@@ -1,0 +1,1 @@
+<preference for="${vendor}\${module}\Api\${resourceName}RepositoryInterface" type="${vendor}\${module}\Model\${resourceName}Repository"/>
