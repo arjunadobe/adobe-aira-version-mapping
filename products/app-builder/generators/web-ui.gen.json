@@ -1,0 +1,15 @@
+{
+  "id": "app-builder.web-ui",
+  "label": "Web UI component (React Spectrum)",
+  "class": "B",
+  "pack": "app-builder",
+  "applicability": "n/a",
+  "detect": "app.config.yaml",
+  "fields": [
+    { "id": "componentName", "label": "Component name", "type": "text", "validate": "identifier", "default": "MyPanel" }
+  ],
+  "files": [
+    { "path": "web-src/src/components/${componentName}.js", "template": "component.js" }
+  ],
+  "postNote": "React Spectrum component. Wrap your app in <Provider theme={defaultTheme}>. Route to it from App.js; `aio app dev` serves web-src locally."
+}

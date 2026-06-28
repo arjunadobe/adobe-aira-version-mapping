@@ -3,6 +3,68 @@
   "schemaVersion": "1.0",
   "generators": [
     {
+      "id": "app-builder.api-mesh-config",
+      "label": "API Mesh config (starter mesh.json)",
+      "class": "B",
+      "pack": "app-builder",
+      "applicability": "n/a",
+      "detect": "app.config.yaml",
+      "fields": [
+        {
+          "id": "sourceName",
+          "label": "First source name",
+          "type": "text",
+          "validate": "identifier",
+          "default": "MySource"
+        },
+        {
+          "id": "endpoint",
+          "label": "Source endpoint",
+          "type": "text",
+          "default": "https://example.com/graphql"
+        }
+      ],
+      "files": [
+        {
+          "path": "mesh.json",
+          "merge": false,
+          "content": "{\n  \"meshConfig\": {\n    \"sources\": [\n      {\n        \"name\": \"${sourceName}\",\n        \"handler\": {\n          \"graphql\": {\n            \"endpoint\": \"${endpoint}\"\n          }\n        }\n      }\n    ],\n    \"transforms\": []\n  }\n}\n"
+        }
+      ],
+      "postNote": "Create-only starter mesh. Run `aio api-mesh create mesh.json` to provision, `aio api-mesh update` to apply changes. Keep secrets in runtime params, never inline (commerce-saas/mesh-secrets-in-env)."
+    },
+    {
+      "id": "app-builder.extension-point",
+      "label": "Extension point registration",
+      "class": "B",
+      "pack": "app-builder",
+      "applicability": "n/a",
+      "detect": "app.config.yaml",
+      "fields": [
+        {
+          "id": "extensionPoint",
+          "label": "Extension point",
+          "type": "select",
+          "options": [
+            "commerce-backend-ui-1",
+            "aem-cf-editor-1",
+            "aem-ui-1",
+            "asset-compute-worker-1",
+            "dx-excshell-1"
+          ],
+          "default": "commerce-backend-ui-1"
+        }
+      ],
+      "files": [
+        {
+          "path": "ext-config/${extensionPoint}.json",
+          "merge": false,
+          "content": "{\n  \"operations\": {\n    \"view\": [\n      { \"impl\": \"index.html\", \"type\": \"web\" }\n    ]\n  },\n  \"runtimeManifest\": {\n    \"packages\": {\n      \"${extensionPoint}\": {\n        \"license\": \"Apache-2.0\",\n        \"actions\": {}\n      }\n    }\n  },\n  \"_note\": \"Extension config for ${extensionPoint}. Reference from app.config.yaml: extensions.${extensionPoint}.$include = ext-config/${extensionPoint}.json\"\n}\n"
+        }
+      ],
+      "postNote": "Wire this extension point into app.config.yaml under `extensions:` (its $include path points at the generated config). Then `aio app dev` to preview the extension surface."
+    },
+    {
       "id": "app-builder.runtime-action",
       "label": "Runtime action",
       "class": "B",
@@ -26,10 +88,60 @@
         }
       ],
       "postNote": "Register the action in app.config.yaml under runtimeManifest.packages.<pkg>.actions.${actionName} (function: actions/${actionName}/index.js). Then `aio app dev` / `aio app deploy`."
+    },
+    {
+      "id": "app-builder.web-action",
+      "label": "Web action (HTTP endpoint)",
+      "class": "B",
+      "pack": "app-builder",
+      "applicability": "n/a",
+      "detect": "app.config.yaml",
+      "fields": [
+        {
+          "id": "actionName",
+          "label": "Action name",
+          "type": "text",
+          "validate": "kebab",
+          "default": "my-web-action"
+        }
+      ],
+      "files": [
+        {
+          "path": "actions/${actionName}/index.js",
+          "merge": false,
+          "content": "/*\n * ${actionName} — App Builder WEB action (HTTP-invokable).\n * Returns { statusCode, body }. Validate required params; keep secrets in inputs/.env.\n */\nconst { Core } = require('@adobe/aio-sdk');\n\nasync function main(params) {\n  const logger = Core.Logger('${actionName}', { level: params.LOG_LEVEL || 'info' });\n  try {\n    // const required = ['param']; for (const p of required) if (!params[p]) ...\n    logger.info('${actionName} (web) invoked');\n    return {\n      statusCode: 200,\n      headers: { 'Content-Type': 'application/json' },\n      body: { ok: true, action: '${actionName}' },\n    };\n  } catch (error) {\n    logger.error(error);\n    return { statusCode: 500, body: { error: 'server error' } };\n  }\n}\n\nexports.main = main;\n"
+        }
+      ],
+      "postNote": "Register under runtimeManifest with web: 'yes' and final: true for any required params (aio/web-action-final). Secrets via .env / inputs, never inline (aio/secrets-in-env)."
+    },
+    {
+      "id": "app-builder.web-ui",
+      "label": "Web UI component (React Spectrum)",
+      "class": "B",
+      "pack": "app-builder",
+      "applicability": "n/a",
+      "detect": "app.config.yaml",
+      "fields": [
+        {
+          "id": "componentName",
+          "label": "Component name",
+          "type": "text",
+          "validate": "identifier",
+          "default": "MyPanel"
+        }
+      ],
+      "files": [
+        {
+          "path": "web-src/src/components/${componentName}.js",
+          "merge": false,
+          "content": "/* ${componentName} — App Builder web UI (React Spectrum). */\nimport React from 'react';\nimport { Provider, defaultTheme, View, Heading, Content } from '@adobe/react-spectrum';\n\nexport default function ${componentName}() {\n  return (\n    <Provider theme={defaultTheme} colorScheme=\"light\">\n      <View padding=\"size-300\">\n        <Heading level={2}>${componentName}</Heading>\n        <Content>Your App Builder UI starts here.</Content>\n      </View>\n    </Provider>\n  );\n}\n"
+        }
+      ],
+      "postNote": "React Spectrum component. Wrap your app in <Provider theme={defaultTheme}>. Route to it from App.js; `aio app dev` serves web-src locally."
     }
   ],
   "_integrity": {
-    "sha256": "be0357e17e651d791c1475a2525ed9711808ff0d40e33b8a83424b956a600923",
-    "signature": "STUB:be0357e17e651d79"
+    "sha256": "1baa250e3c9af9d40edd788d95f06dfd093037eb59cc4271c7e06169bd1458aa",
+    "signature": "STUB:1baa250e3c9af9d4"
   }
 }

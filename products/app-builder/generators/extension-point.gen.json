@@ -1,0 +1,15 @@
+{
+  "id": "app-builder.extension-point",
+  "label": "Extension point registration",
+  "class": "B",
+  "pack": "app-builder",
+  "applicability": "n/a",
+  "detect": "app.config.yaml",
+  "fields": [
+    { "id": "extensionPoint", "label": "Extension point", "type": "select", "options": ["commerce-backend-ui-1", "aem-cf-editor-1", "aem-ui-1", "asset-compute-worker-1", "dx-excshell-1"], "default": "commerce-backend-ui-1" }
+  ],
+  "files": [
+    { "path": "ext-config/${extensionPoint}.json", "template": "ext-config.json" }
+  ],
+  "postNote": "Wire this extension point into app.config.yaml under `extensions:` (its $include path points at the generated config). Then `aio app dev` to preview the extension surface."
+}

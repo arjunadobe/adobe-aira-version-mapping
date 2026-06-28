@@ -1,0 +1,16 @@
+{
+  "operations": {
+    "view": [
+      { "impl": "index.html", "type": "web" }
+    ]
+  },
+  "runtimeManifest": {
+    "packages": {
+      "${extensionPoint}": {
+        "license": "Apache-2.0",
+        "actions": {}
+      }
+    }
+  },
+  "_note": "Extension config for ${extensionPoint}. Reference from app.config.yaml: extensions.${extensionPoint}.$include = ext-config/${extensionPoint}.json"
+}

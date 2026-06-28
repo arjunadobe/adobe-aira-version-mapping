@@ -1,0 +1,16 @@
+{
+  "id": "app-builder.api-mesh-config",
+  "label": "API Mesh config (starter mesh.json)",
+  "class": "B",
+  "pack": "app-builder",
+  "applicability": "n/a",
+  "detect": "app.config.yaml",
+  "fields": [
+    { "id": "sourceName", "label": "First source name", "type": "text", "validate": "identifier", "default": "MySource" },
+    { "id": "endpoint", "label": "Source endpoint", "type": "text", "default": "https://example.com/graphql" }
+  ],
+  "files": [
+    { "path": "mesh.json", "template": "mesh.json" }
+  ],
+  "postNote": "Create-only starter mesh. Run `aio api-mesh create mesh.json` to provision, `aio api-mesh update` to apply changes. Keep secrets in runtime params, never inline (commerce-saas/mesh-secrets-in-env)."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "app-builder.web-action",
+  "label": "Web action (HTTP endpoint)",
+  "class": "B",
+  "pack": "app-builder",
+  "applicability": "n/a",
+  "detect": "app.config.yaml",
+  "fields": [
+    { "id": "actionName", "label": "Action name", "type": "text", "validate": "kebab", "default": "my-web-action" }
+  ],
+  "files": [
+    { "path": "actions/${actionName}/index.js", "template": "web-action.js" }
+  ],
+  "postNote": "Register under runtimeManifest with web: 'yes' and final: true for any required params (aio/web-action-final). Secrets via .env / inputs, never inline (aio/secrets-in-env)."
+}
