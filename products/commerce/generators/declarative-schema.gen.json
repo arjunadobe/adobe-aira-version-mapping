@@ -1,0 +1,17 @@
+{
+  "id": "commerce.declarative-schema",
+  "label": "Declarative schema (db_schema.xml)",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "tableName", "label": "Table name", "type": "text", "validate": "identifier", "default": "vendor_module_entity" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/etc/db_schema.xml", "template": "db_schema.xml" }
+  ],
+  "postNote": "Declarative schema over install/upgrade scripts (commerce/declarative-schema). Apply: bin/magento setup:upgrade. Generate the whitelist: bin/magento setup:db-declaration:generate-whitelist --module-name=${vendor}_${module}. (Create-only — extend an existing db_schema.xml by hand.)"
+}

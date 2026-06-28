@@ -1,0 +1,19 @@
+{
+  "id": "commerce.graphql-resolver",
+  "label": "GraphQL resolver",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "resolver", "label": "Resolver class", "type": "text", "validate": "identifier", "default": "MyResolver" },
+    { "id": "queryField", "label": "Query field", "type": "text", "validate": "identifier", "default": "myField" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Model/Resolver/${resolver}.php", "template": "resolver.php" },
+    { "path": "app/code/${vendor}/${module}/etc/schema.graphqls", "template": "schema.graphqls" }
+  ],
+  "postNote": "schema.graphqls is create-only — if it already exists, add the field by hand: type Query { ${queryField}: String @resolver(class: \"${vendor}\\\\${module}\\\\Model\\\\Resolver\\\\${resolver}\") }"
+}

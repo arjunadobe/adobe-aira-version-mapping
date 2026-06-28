@@ -1,0 +1,17 @@
+{
+  "id": "commerce.plugin",
+  "label": "Plugin (interceptor)",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "pluginName", "label": "Plugin class", "type": "text", "validate": "identifier", "default": "MyPlugin" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Plugin/${pluginName}.php", "template": "plugin.php" }
+  ],
+  "postNote": "Register the plugin in app/code/${vendor}/${module}/etc/di.xml — add: <type name=\"Target\\Class\"><plugin name=\"${vendor}_${module}_${pluginName}\" type=\"${vendor}\\${module}\\Plugin\\${pluginName}\"/></type>. (XML config is hand-merged — the engine's deep-merge is JSON-only.) sortOrder required if you have multiple plugins (commerce/plugin-sort-order)."
+}

@@ -1,0 +1,18 @@
+{
+  "id": "commerce.observer",
+  "label": "Event observer",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "observerName", "label": "Observer class", "type": "text", "validate": "identifier", "default": "MyObserver" },
+    { "id": "event", "label": "Event name", "type": "text", "default": "catalog_product_save_after" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Observer/${observerName}.php", "template": "observer.php" }
+  ],
+  "postNote": "Register in etc/events.xml (or etc/<area>/events.xml) — add: <event name=\"${event}\"><observer name=\"${vendor}_${module}_${observerName}\" instance=\"${vendor}\\${module}\\Observer\\${observerName}\"/></event>. (XML hand-merged — JSON-only engine merge.)"
+}

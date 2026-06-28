@@ -1,0 +1,18 @@
+{
+  "id": "commerce.console-command",
+  "label": "Console command",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "commandName", "label": "Command class", "type": "text", "validate": "identifier", "default": "MyCommand" },
+    { "id": "cliName", "label": "CLI name", "type": "text", "default": "vendor:module:run" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Console/Command/${commandName}.php", "template": "command.php" }
+  ],
+  "postNote": "Register in etc/di.xml under Magento\\Framework\\Console\\CommandListComposite (or CommandList): add <item name=\"${cliName}\" xsi:type=\"object\">${vendor}\\${module}\\Console\\Command\\${commandName}</item>. (XML hand-merged.) Run: bin/magento ${cliName}."
+}

@@ -1,0 +1,18 @@
+{
+  "id": "commerce.module",
+  "label": "Module (Vendor_Module)",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/registration.php", "template": "registration.php" },
+    { "path": "app/code/${vendor}/${module}/etc/module.xml", "template": "module.xml" },
+    { "path": "app/code/${vendor}/${module}/composer.json", "template": "composer.json" }
+  ],
+  "postNote": "Enable with: bin/magento module:enable ${vendor}_${module} && bin/magento setup:upgrade. Then generate components (plugin/observer/controller/...) into this module."
+}

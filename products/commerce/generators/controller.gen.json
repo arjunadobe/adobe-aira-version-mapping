@@ -1,0 +1,18 @@
+{
+  "id": "commerce.controller",
+  "label": "Controller action",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "controller", "label": "Controller", "type": "text", "validate": "identifier", "default": "Index" },
+    { "id": "action", "label": "Action", "type": "text", "validate": "identifier", "default": "Index" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Controller/${controller}/${action}.php", "template": "action.php" }
+  ],
+  "postNote": "Add a route in etc/frontend/routes.xml: <router id=\"standard\"><route id=\"<frontName>\" frontName=\"<frontName>\"><module name=\"${vendor}_${module}\"/></route></router>. (XML hand-merged.)"
+}

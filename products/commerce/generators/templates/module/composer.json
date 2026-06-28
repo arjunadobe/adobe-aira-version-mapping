@@ -1,0 +1,13 @@
+{
+  "name": "${vendor}/module-${module}",
+  "description": "${vendor}_${module} module",
+  "type": "magento2-module",
+  "license": "OSL-3.0",
+  "require": {
+    "php": "~8.3.0||~8.4.0"
+  },
+  "autoload": {
+    "files": ["registration.php"],
+    "psr-4": { "${vendor}\\${module}\\": "" }
+  }
+}

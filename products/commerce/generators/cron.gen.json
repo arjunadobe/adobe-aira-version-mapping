@@ -1,0 +1,18 @@
+{
+  "id": "commerce.cron",
+  "label": "Cron job",
+  "class": "B",
+  "pack": "commerce",
+  "applicability": "on-prem",
+  "detect": "bin/magento",
+  "fields": [
+    { "id": "vendor", "label": "Vendor", "type": "text", "validate": "identifier", "default": "Vendor" },
+    { "id": "module", "label": "Module", "type": "text", "validate": "identifier", "default": "Module" },
+    { "id": "cronName", "label": "Cron class", "type": "text", "validate": "identifier", "default": "MyCron" },
+    { "id": "schedule", "label": "Schedule (cron expr)", "type": "text", "default": "0 * * * *" }
+  ],
+  "files": [
+    { "path": "app/code/${vendor}/${module}/Cron/${cronName}.php", "template": "cron.php" }
+  ],
+  "postNote": "Register in etc/crontab.xml: <group id=\"default\"><job name=\"${vendor}_${module}_${cronName}\" instance=\"${vendor}\\${module}\\Cron\\${cronName}\" method=\"execute\"><schedule>${schedule}</schedule></job></group>. (XML hand-merged.)"
+}
