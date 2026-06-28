@@ -1,0 +1,22 @@
+{
+  "id": "commerce-saas.commerce-webhooks",
+  "label": "Commerce Webhook (synchronous)",
+  "class": "C",
+  "pack": "commerce-saas",
+  "applicability": "both",
+  "detect": "mesh.json",
+  "provisioning": {
+    "label": "Commerce Webhooks",
+    "check": "doc",
+    "help": "Adobe Commerce Webhooks module (2.4.6+). https://developer.adobe.com/commerce/extensibility/webhooks/"
+  },
+  "fields": [
+    { "id": "hookName", "label": "Webhook name", "type": "text", "validate": "identifier", "default": "validate_payment" },
+    { "id": "method", "label": "Commerce method", "type": "text", "default": "observer.checkout_submit_all_after" },
+    { "id": "url", "label": "Target URL", "type": "text", "default": "https://<app>.adobeio-static.net/api/v1/web/<pkg>/<action>" }
+  ],
+  "files": [
+    { "path": "webhooks/${hookName}.xml", "template": "webhook.xml" }
+  ],
+  "postNote": "Synchronous outbound hook — Commerce waits for the response, so keep the endpoint fast. Place under app/code or the webhooks config per your deployment."
+}

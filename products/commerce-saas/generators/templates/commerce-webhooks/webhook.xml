@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- ${hookName} — synchronous Commerce webhook. Secrets go in the webhook config/.env, never here. -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_AdobeCommerceWebhooks:etc/webhooks.xsd">
+  <method name="${method}" type="after">
+    <hooks>
+      <batch name="${hookName}">
+        <hook name="${hookName}" url="${url}" method="POST" timeout="5000" softTimeout="1000" priority="100" required="true">
+          <fields>
+            <field name="payload" source="data" />
+          </fields>
+        </hook>
+      </batch>
+    </hooks>
+  </method>
+</config>

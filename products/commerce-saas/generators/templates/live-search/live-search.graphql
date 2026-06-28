@@ -1,0 +1,11 @@
+# ${queryName} — Live Search productSearch (AI-powered, Adobe Sensei)
+query ${queryName}($phrase: String!, $pageSize: Int = 12) {
+  productSearch(phrase: $phrase, page_size: $pageSize) {
+    total_count
+    items {
+      product { name sku }
+      productView { ... on SimpleProductView { price { final { amount { value currency } } } } }
+    }
+    facets { title attribute buckets { title __typename } }
+  }
+}

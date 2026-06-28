@@ -1,0 +1,20 @@
+{
+  "id": "commerce-saas.catalog-service",
+  "label": "Catalog Service (products)",
+  "class": "C",
+  "pack": "commerce-saas",
+  "applicability": "both",
+  "detect": "mesh.json",
+  "provisioning": {
+    "label": "Catalog Service",
+    "check": "doc",
+    "help": "Enable Commerce Services Connector + SaaS data export. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/catalog-service"
+  },
+  "fields": [
+    { "id": "queryName", "label": "Query name", "type": "text", "validate": "identifier", "default": "catalogProducts" }
+  ],
+  "files": [
+    { "path": "queries/${queryName}.graphql", "template": "catalog-service.graphql" }
+  ],
+  "postNote": "Catalog Service serves fast catalog data (PDP/PLP). Pair with Live Search for discovery; both ride the Catalog GraphQL endpoint via API Mesh."
+}

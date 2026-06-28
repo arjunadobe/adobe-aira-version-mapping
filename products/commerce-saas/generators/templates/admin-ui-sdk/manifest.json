@@ -1,0 +1,10 @@
+{
+  "registrations": [
+    {
+      "menuItems": [
+        { "id": "${routePath}", "title": "${menuName}", "parent": "Magento_Backend::system", "sortOrder": 100 }
+      ],
+      "page": { "title": "${menuName}", "url": "/${routePath}" }
+    }
+  ]
+}

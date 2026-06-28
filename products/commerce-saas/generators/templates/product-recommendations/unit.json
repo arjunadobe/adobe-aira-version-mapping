@@ -1,0 +1,7 @@
+{
+  "unit": "${unitName}",
+  "typeId": "${unitType}",
+  "pageType": "Product",
+  "displayNumber": 8,
+  "_note": "Recommendation unit consumed by @dropins/storefront-recommendations. typeId drives the Sensei model; behavioral signals come from @adobe/magento-storefront-events-sdk."
+}

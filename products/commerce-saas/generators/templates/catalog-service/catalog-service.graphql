@@ -1,0 +1,11 @@
+# ${queryName} — Catalog Service products query (fast PDP/PLP data)
+query ${queryName}($skus: [String!]!) {
+  products(skus: $skus) {
+    sku
+    name
+    ... on SimpleProductView {
+      price { final { amount { value currency } } }
+    }
+    images(roles: ["thumbnail"]) { url label }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "event": "${eventType}",
+  "_note": "XDM field map for ${eventType}. Left = Commerce event field, right = XDM path. Types must match the XDM schema in your AEP sandbox.",
+  "mapping": {
+    "commerce.productListItems": "productListItems",
+    "commerce.cart.cartID": "commerce.cart.cartID",
+    "identityMap": "identityMap"
+  }
+}
