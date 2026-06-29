@@ -12,6 +12,8 @@
     "label": { "type": "string" },
     "category": { "enum": ["data-binding", "localization", "personalization", "experimentation", "analytics"] },
     "appliesToStacks": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "applicability": { "type": "string", "description": "saas | on-prem | both | n/a (matches the generator field this generalizes)" },
+    "detect": { "type": "string", "description": "optional workspace marker gating the capability, e.g. fstab.yaml" },
     "provisioning": {
       "type": "object",
       "description": "Class-C check (warn-only) before the write",
@@ -31,7 +33,8 @@
           "label": { "type": "string" },
           "type": { "enum": ["text", "select", "secret"], "description": "secret -> keychain, NEVER to the model" },
           "options": { "type": "array", "items": { "type": "string" } },
-          "default": { "type": "string" }
+          "default": { "type": "string" },
+          "validate": { "type": "string", "description": "e.g. identifier · kebab · non-empty" }
         }
       }
     },
