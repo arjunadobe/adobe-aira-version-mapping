@@ -1,0 +1,147 @@
+{
+  "stack": "app-builder",
+  "schemaVersion": "1.0",
+  "capabilities": [
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "commerce-saas.admin-ui-sdk",
+      "label": "Admin UI SDK extension",
+      "category": "admin-extension",
+      "appliesToStacks": [
+        "app-builder"
+      ],
+      "applicability": "both",
+      "detect": "app.config.yaml",
+      "provisioning": {
+        "label": "Admin UI SDK",
+        "check": "doc",
+        "help": "Install the Adobe Commerce Admin UI SDK module in the Commerce instance. https://developer.adobe.com/commerce/extensibility/admin-ui-sdk/"
+      },
+      "fields": [
+        {
+          "id": "menuName",
+          "label": "Admin menu label",
+          "type": "text",
+          "default": "My Extension"
+        },
+        {
+          "id": "routePath",
+          "label": "Route path",
+          "type": "text",
+          "validate": "kebab",
+          "default": "my-extension"
+        }
+      ],
+      "files": [
+        {
+          "path": "src/commerce-backend-ui-1/web/${routePath}/index.html",
+          "merge": false,
+          "content": "<!doctype html>\n<!-- ${menuName} — Admin UI SDK page rendered inside the Commerce admin (route: ${routePath}) -->\n<html lang=\"en\">\n  <head><meta charset=\"utf-8\" /><title>${menuName}</title></head>\n  <body>\n    <div id=\"root\">${menuName}</div>\n    <script type=\"module\" src=\"./index.js\"></script>\n  </body>\n</html>\n"
+        },
+        {
+          "path": "extension-manifest.json",
+          "merge": true,
+          "content": "{\n  \"registrations\": [\n    {\n      \"menuItems\": [\n        { \"id\": \"${routePath}\", \"title\": \"${menuName}\", \"parent\": \"Magento_Backend::system\", \"sortOrder\": 100 }\n      ],\n      \"page\": { \"title\": \"${menuName}\", \"url\": \"/${routePath}\" }\n    }\n  ]\n}\n"
+        }
+      ],
+      "binds": {
+        "service": "Admin UI SDK"
+      },
+      "postNote": "Admin UI SDK renders this App Builder UI inside the Commerce admin. Declare required ACL resources (commerce-saas/admin-ext-permissions). Run `aio app dev` to preview.",
+      "sourceRef": "products/commerce-saas/generators/admin-ui-sdk.gen.json (lifted to a capability manifest)"
+    },
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "commerce-saas.io-events",
+      "label": "I/O Events consumer (Commerce events)",
+      "category": "eventing",
+      "appliesToStacks": [
+        "app-builder"
+      ],
+      "applicability": "both",
+      "detect": "app.config.yaml",
+      "provisioning": {
+        "label": "Adobe I/O Events for Commerce",
+        "check": "cli:aio app:get-events",
+        "help": "Install the Adobe I/O Events module + register the Commerce event provider. https://developer.adobe.com/commerce/extensibility/events/"
+      },
+      "fields": [
+        {
+          "id": "actionName",
+          "label": "Consumer action",
+          "type": "text",
+          "validate": "kebab",
+          "default": "commerce-event-consumer"
+        },
+        {
+          "id": "eventCode",
+          "label": "Event",
+          "type": "select",
+          "options": [
+            "com.adobe.commerce.observer.catalog_product_save_after",
+            "com.adobe.commerce.observer.sales_order_save_after",
+            "com.adobe.commerce.observer.customer_save_after",
+            "com.adobe.commerce.observer.cataloginventory_stock_item_save_after"
+          ],
+          "default": "com.adobe.commerce.observer.sales_order_save_after"
+        }
+      ],
+      "files": [
+        {
+          "path": "actions/${actionName}/index.js",
+          "merge": false,
+          "content": "/*\n * ${actionName} — Adobe I/O Events consumer for ${eventCode}.\n * Deliveries can repeat → idempotent on event.id.\n */\nconst { Core } = require('@adobe/aio-sdk');\n\nasync function main(params) {\n  const logger = Core.Logger('${actionName}', { level: params.LOG_LEVEL || 'info' });\n  try {\n    const event = params.data || params;          // CloudEvent payload\n    const eventId = params.id || event?.id;\n    logger.info('event ${eventCode} received', eventId);\n\n    // TODO idempotency: skip if eventId already processed (state/store lookup).\n\n    // ... handle the Commerce event ...\n\n    return { statusCode: 200, body: { ok: true, eventId } };\n  } catch (error) {\n    logger.error(error);\n    return { statusCode: 500, body: { error: 'server error' } };\n  }\n}\n\nexports.main = main;\n"
+        }
+      ],
+      "binds": {
+        "service": "Adobe I/O Events for Commerce"
+      },
+      "postNote": "Register the action as an event consumer in app.config.yaml and subscribe to ${eventCode}. I/O Event deliveries can REPEAT — make the handler idempotent (use event.id) (commerce-saas/idempotent-event-handlers).",
+      "sourceRef": "products/commerce-saas/generators/io-events.gen.json (lifted to a capability manifest)"
+    },
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "commerce-saas.payment-services",
+      "label": "Payment Services webhook handler",
+      "category": "payments",
+      "appliesToStacks": [
+        "app-builder"
+      ],
+      "applicability": "both",
+      "detect": "app.config.yaml",
+      "provisioning": {
+        "label": "Payment Services",
+        "check": "doc",
+        "help": "Onboard Payment Services + a merchant account. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/payment-services"
+      },
+      "fields": [
+        {
+          "id": "actionName",
+          "label": "Webhook action",
+          "type": "text",
+          "validate": "kebab",
+          "default": "payment-webhook"
+        }
+      ],
+      "files": [
+        {
+          "path": "actions/${actionName}/index.js",
+          "merge": false,
+          "content": "/*\n * ${actionName} — Payment Services webhook (web action).\n * VERIFY the signature BEFORE processing. Secret from params (.env / runtime), never inline.\n */\nconst crypto = require('crypto');\nconst { Core } = require('@adobe/aio-sdk');\n\nfunction verify(rawBody, signature, secret) {\n  const expected = crypto.createHmac('sha256', secret).update(rawBody).digest('base64');\n  return !!signature && crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));\n}\n\nasync function main(params) {\n  const logger = Core.Logger('${actionName}', { level: params.LOG_LEVEL || 'info' });\n  const raw = params.__ow_body || JSON.stringify(params);\n  const sig = params.__ow_headers?.['x-adobe-signature'];\n  if (!verify(raw, sig, params.WEBHOOK_SECRET)) {\n    logger.warn('signature verification failed');\n    return { statusCode: 401, body: { error: 'invalid signature' } };\n  }\n  // ... handle the verified payment event ...\n  return { statusCode: 200, body: { ok: true } };\n}\n\nexports.main = main;\n"
+        }
+      ],
+      "binds": {
+        "service": "Payment Services"
+      },
+      "postNote": "Expose as a web action (web: true). VERIFY the provider signature before processing (commerce-saas/payment-webhook-verify); keep the signing secret in .env, never inline.",
+      "sourceRef": "products/commerce-saas/generators/payment-services.gen.json (lifted to a capability manifest)"
+    }
+  ],
+  "_integrity": {
+    "sha256": "585cd14200e85698421855a2b4abf6263b3bbecfe5dfe96b152c0a52b334fd66",
+    "signature": "STUB:585cd14200e85698"
+  }
+}

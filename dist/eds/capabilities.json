@@ -1,0 +1,64 @@
+{
+  "stack": "eds",
+  "schemaVersion": "1.0",
+  "capabilities": [
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "eds.commerce-dropin-block",
+      "label": "Commerce drop-in block",
+      "category": "data-binding",
+      "appliesToStacks": [
+        "eds"
+      ],
+      "applicability": "saas",
+      "detect": "fstab.yaml",
+      "fields": [
+        {
+          "id": "blockName",
+          "label": "Block name",
+          "type": "text",
+          "validate": "kebab",
+          "default": "product-details"
+        },
+        {
+          "id": "dropin",
+          "label": "Drop-in",
+          "type": "select",
+          "options": [
+            "storefront-pdp",
+            "storefront-cart",
+            "storefront-checkout",
+            "storefront-product-discovery",
+            "storefront-recommendations",
+            "storefront-account",
+            "storefront-order"
+          ],
+          "default": "storefront-pdp"
+        }
+      ],
+      "files": [
+        {
+          "path": "blocks/${blockName}/${blockName}.js",
+          "merge": false,
+          "content": "/* ${blockName} — EDS block backed by the @dropins/${dropin} drop-in (Commerce SaaS). */\nimport { initializers } from '@dropins/tools/initializer.js';\nimport { render as provider } from '@dropins/${dropin}/render.js';\n\nexport default async function decorate(block) {\n  block.classList.add('${blockName}');\n  // Mount the drop-in. Import the specific container from @dropins/${dropin}\n  // (see the boilerplate-commerce docs) and render it into `block`.\n  await initializers.mountImmediately(provider, {});\n}\n"
+        },
+        {
+          "path": "blocks/${blockName}/${blockName}.css",
+          "merge": false,
+          "content": "/* ${blockName} drop-in block — scoped to .${blockName} (eds/block-css-scope). */\n.${blockName} {\n  display: grid;\n  gap: var(--spacing-m, 16px);\n}\n"
+        }
+      ],
+      "binds": {
+        "service": "Adobe Commerce SaaS drop-ins (@dropins/${dropin})",
+        "via": "drop-in component"
+      },
+      "postNote": "Bridges EDS <-> Commerce SaaS: this block mounts a @dropins/${dropin} component. The aem-boilerplate-commerce postinstall provides the drop-in packages; see its docs for the exact container import.",
+      "sourceRef": "products/eds/generators/commerce-dropin-block.gen.json (lifted to a capability manifest)"
+    }
+  ],
+  "_integrity": {
+    "sha256": "18db433162b1346b73825da9c93a0e10d667e922237d4c5a7e3a740c7c552d5a",
+    "signature": "STUB:18db433162b1346b"
+  }
+}

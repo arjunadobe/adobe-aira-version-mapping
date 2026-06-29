@@ -1,0 +1,274 @@
+{
+  "stack": "commerce-saas",
+  "schemaVersion": "1.0",
+  "capabilities": [
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "commerce-saas.api-mesh-source",
+      "label": "API Mesh source",
+      "category": "integration",
+      "appliesToStacks": [
+        "commerce-saas"
+      ],
+      "applicability": "both",
+      "detect": "mesh.json",
+      "provisioning": {
+        "label": "API Mesh",
+        "check": "cli:aio api-mesh:status",
+        "help": "Requires an Adobe I/O project with API Mesh provisioned. https://developer.adobe.com/graphql-mesh-gateway/"
+      },
+      "fields": [
+        {
+          "id": "sourceName",
+          "label": "Source name",
+          "type": "text",
+          "validate": "identifier",
+          "default": "MyCommerceSource"
+        },
+        {
+          "id": "endpoint",
+          "label": "GraphQL/REST endpoint",
+          "type": "text",
+          "default": "https://<your-commerce>/graphql"
+        }
+      ],
+      "files": [
+        {
+          "path": "mesh.json",
+          "merge": true,
+          "content": "{\n  \"meshConfig\": {\n    \"sources\": [\n      {\n        \"name\": \"${sourceName}\",\n        \"handler\": {\n          \"graphql\": {\n            \"endpoint\": \"${endpoint}\"\n          }\n        }\n      }\n    ]\n  }\n}\n"
+        }
+      ],
+      "binds": {
+        "service": "API Mesh"
+      },
+      "postNote": "Run `aio api-mesh update mesh.json` to apply. Secrets/keys belong in .env / runtime params, never inline in mesh.json (commerce-saas/mesh-secrets-in-env).",
+      "sourceRef": "products/commerce-saas/generators/api-mesh-source.gen.json (lifted to a capability manifest)"
+    },
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "commerce-saas.catalog-service",
+      "label": "Catalog Service (products)",
+      "category": "data-binding",
+      "appliesToStacks": [
+        "commerce-saas"
+      ],
+      "applicability": "both",
+      "detect": "mesh.json",
+      "provisioning": {
+        "label": "Catalog Service",
+        "check": "doc",
+        "help": "Enable Commerce Services Connector + SaaS data export. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/catalog-service"
+      },
+      "fields": [
+        {
+          "id": "queryName",
+          "label": "Query name",
+          "type": "text",
+          "validate": "identifier",
+          "default": "catalogProducts"
+        }
+      ],
+      "files": [
+        {
+          "path": "queries/${queryName}.graphql",
+          "merge": false,
+          "content": "# ${queryName} — Catalog Service products query (fast PDP/PLP data)\nquery ${queryName}($skus: [String!]!) {\n  products(skus: $skus) {\n    sku\n    name\n    ... on SimpleProductView {\n      price { final { amount { value currency } } }\n    }\n    images(roles: [\"thumbnail\"]) { url label }\n  }\n}\n"
+        }
+      ],
+      "binds": {
+        "service": "Catalog Service"
+      },
+      "postNote": "Catalog Service serves fast catalog data (PDP/PLP). Pair with Live Search for discovery; both ride the Catalog GraphQL endpoint via API Mesh.",
+      "sourceRef": "products/commerce-saas/generators/catalog-service.gen.json (lifted to a capability manifest)"
+    },
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "commerce-saas.commerce-webhooks",
+      "label": "Commerce Webhook (synchronous)",
+      "category": "integration",
+      "appliesToStacks": [
+        "commerce-saas"
+      ],
+      "applicability": "both",
+      "detect": "mesh.json",
+      "provisioning": {
+        "label": "Commerce Webhooks",
+        "check": "doc",
+        "help": "Adobe Commerce Webhooks module (2.4.6+). https://developer.adobe.com/commerce/extensibility/webhooks/"
+      },
+      "fields": [
+        {
+          "id": "hookName",
+          "label": "Webhook name",
+          "type": "text",
+          "validate": "identifier",
+          "default": "validate_payment"
+        },
+        {
+          "id": "method",
+          "label": "Commerce method",
+          "type": "text",
+          "default": "observer.checkout_submit_all_after"
+        },
+        {
+          "id": "url",
+          "label": "Target URL",
+          "type": "text",
+          "default": "https://<app>.adobeio-static.net/api/v1/web/<pkg>/<action>"
+        }
+      ],
+      "files": [
+        {
+          "path": "webhooks/${hookName}.xml",
+          "merge": false,
+          "content": "<?xml version=\"1.0\"?>\n<!-- ${hookName} — synchronous Commerce webhook. Secrets go in the webhook config/.env, never here. -->\n<config xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"urn:magento:module:Magento_AdobeCommerceWebhooks:etc/webhooks.xsd\">\n  <method name=\"${method}\" type=\"after\">\n    <hooks>\n      <batch name=\"${hookName}\">\n        <hook name=\"${hookName}\" url=\"${url}\" method=\"POST\" timeout=\"5000\" softTimeout=\"1000\" priority=\"100\" required=\"true\">\n          <fields>\n            <field name=\"payload\" source=\"data\" />\n          </fields>\n        </hook>\n      </batch>\n    </hooks>\n  </method>\n</config>\n"
+        }
+      ],
+      "binds": {
+        "service": "Commerce Webhooks"
+      },
+      "postNote": "Synchronous outbound hook — Commerce waits for the response, so keep the endpoint fast. Place under app/code or the webhooks config per your deployment.",
+      "sourceRef": "products/commerce-saas/generators/commerce-webhooks.gen.json (lifted to a capability manifest)"
+    },
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "commerce-saas.data-connection",
+      "label": "Data Connection (XDM event mapping)",
+      "category": "analytics",
+      "appliesToStacks": [
+        "commerce-saas"
+      ],
+      "applicability": "both",
+      "detect": "mesh.json",
+      "provisioning": {
+        "label": "Data Connection",
+        "check": "doc",
+        "help": "Install the Data Connection module + configure a datastream. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/data-connection"
+      },
+      "fields": [
+        {
+          "id": "eventType",
+          "label": "Commerce event",
+          "type": "select",
+          "options": [
+            "productPageView",
+            "addToCart",
+            "purchase",
+            "searchRequestSent"
+          ],
+          "default": "addToCart"
+        }
+      ],
+      "files": [
+        {
+          "path": "data-connection/${eventType}.mapping.json",
+          "merge": false,
+          "content": "{\n  \"event\": \"${eventType}\",\n  \"_note\": \"XDM field map for ${eventType}. Left = Commerce event field, right = XDM path. Types must match the XDM schema in your AEP sandbox.\",\n  \"mapping\": {\n    \"commerce.productListItems\": \"productListItems\",\n    \"commerce.cart.cartID\": \"commerce.cart.cartID\",\n    \"identityMap\": \"identityMap\"\n  }\n}\n"
+        }
+      ],
+      "binds": {
+        "service": "Data Connection"
+      },
+      "postNote": "Forwards first-party Commerce events to AEP/Analytics/Target via the datastream. XDM field types MUST match the Commerce event schema (commerce-saas/data-connection-schema).",
+      "sourceRef": "products/commerce-saas/generators/data-connection.gen.json (lifted to a capability manifest)"
+    },
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "commerce-saas.live-search",
+      "label": "Live Search (productSearch)",
+      "category": "data-binding",
+      "appliesToStacks": [
+        "commerce-saas"
+      ],
+      "applicability": "both",
+      "detect": "mesh.json",
+      "provisioning": {
+        "label": "Live Search",
+        "check": "doc",
+        "help": "Enable in the Commerce admin: Commerce Services Connector + SaaS data export + Live Search. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/live-search"
+      },
+      "fields": [
+        {
+          "id": "queryName",
+          "label": "Query name",
+          "type": "text",
+          "validate": "identifier",
+          "default": "liveSearch"
+        }
+      ],
+      "files": [
+        {
+          "path": "queries/${queryName}.graphql",
+          "merge": false,
+          "content": "# ${queryName} — Live Search productSearch (AI-powered, Adobe Sensei)\nquery ${queryName}($phrase: String!, $pageSize: Int = 12) {\n  productSearch(phrase: $phrase, page_size: $pageSize) {\n    total_count\n    items {\n      product { name sku }\n      productView { ... on SimpleProductView { price { final { amount { value currency } } } } }\n    }\n    facets { title attribute buckets { title __typename } }\n  }\n}\n"
+        }
+      ],
+      "binds": {
+        "service": "Live Search"
+      },
+      "postNote": "Live Search is AI-powered (Sensei). Send the productSearch query through API Mesh / the Catalog endpoint; the EDS storefront consumes it via @dropins/storefront-product-discovery.",
+      "sourceRef": "products/commerce-saas/generators/live-search.gen.json (lifted to a capability manifest)"
+    },
+    {
+      "schemaVersion": "1.0",
+      "kind": "capability",
+      "id": "commerce-saas.product-recommendations",
+      "label": "Product Recommendations",
+      "category": "personalization",
+      "appliesToStacks": [
+        "commerce-saas"
+      ],
+      "applicability": "both",
+      "detect": "mesh.json",
+      "provisioning": {
+        "label": "Product Recommendations",
+        "check": "doc",
+        "help": "Enable Commerce Services Connector + SaaS data export + Recommendations. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/product-recommendations"
+      },
+      "fields": [
+        {
+          "id": "unitName",
+          "label": "Recommendation unit",
+          "type": "text",
+          "validate": "identifier",
+          "default": "pdpRecs"
+        },
+        {
+          "id": "unitType",
+          "label": "Type",
+          "type": "select",
+          "options": [
+            "most-viewed",
+            "most-purchased",
+            "recommended-for-you",
+            "more-like-this",
+            "bought-together"
+          ],
+          "default": "recommended-for-you"
+        }
+      ],
+      "files": [
+        {
+          "path": "recommendations/${unitName}.json",
+          "merge": false,
+          "content": "{\n  \"unit\": \"${unitName}\",\n  \"typeId\": \"${unitType}\",\n  \"pageType\": \"Product\",\n  \"displayNumber\": 8,\n  \"_note\": \"Recommendation unit consumed by @dropins/storefront-recommendations. typeId drives the Sensei model; behavioral signals come from @adobe/magento-storefront-events-sdk.\"\n}\n"
+        }
+      ],
+      "binds": {
+        "service": "Product Recommendations"
+      },
+      "postNote": "Behavioral recs (Sensei). Render the unit via @dropins/storefront-recommendations; the storefront event SDK feeds the behavioral signals.",
+      "sourceRef": "products/commerce-saas/generators/product-recommendations.gen.json (lifted to a capability manifest)"
+    }
+  ],
+  "_integrity": {
+    "sha256": "00bb8034c5c3fd48e516518baaef46d3431f1658164a556a19048477c50140fe",
+    "signature": "STUB:00bb8034c5c3fd48"
+  }
+}
