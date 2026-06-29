@@ -1,0 +1,61 @@
+name: publish-signed-dist
+
+# Build + ed25519-sign dist/ and commit the signed artifacts back to main.
+#
+# Runs when the REVIEWED registry data lands on main (the refresh PR is merged,
+# or schema/scripts/capabilities change) and on-demand via workflow_dispatch.
+# This is the "sign on merge" half that refresh.yml's PR body refers to: refresh
+# opens a human-gated PR for the generated/ data; once merged, this rebuilds and
+# signs the published dist/.
+#
+# GRACEFUL WITHOUT THE SECRET: when AIRA_REGISTRY_SIGNING_KEY is absent (forks,
+# or before the secret is added) sign.mjs leaves STUB signatures and `npm run
+# build` still succeeds — the job never fails for lack of the key. Only runs with
+# the secret in env produce real ed25519 signatures.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'products/**'
+      - 'capabilities/**'
+      - 'schema/**'
+      - 'scripts/**'
+      - 'registry.json'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# Never overlap a publish with itself; let the running one finish (don't cancel a
+# half-written sign+commit).
+concurrency:
+  group: publish-signed-dist
+  cancel-in-progress: false
+
+jobs:
+  build-sign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      # The signing key is referenced BY NAME only and handed to the build via
+      # env. sign.mjs reads it from the env var, never logs it, never writes it
+      # to disk. No step echoes this value.
+      - name: Build + sign dist (STUB when secret absent)
+        env:
+          AIRA_REGISTRY_SIGNING_KEY: ${{ secrets.AIRA_REGISTRY_SIGNING_KEY }}
+        run: npm run build
+
+      - name: Commit signed dist/ if changed
+        run: |
+          git config user.name 'aira-registry-bot'
+          git config user.email 'aira-registry-bot@users.noreply.github.com'
+          git add dist/
+          if git diff --cached --quiet; then
+            echo 'dist/ unchanged — nothing to publish.'
+          else
+            git commit -m 'chore(registry): build + sign dist/ (auto) [skip ci]'
+            git push
+          fi
