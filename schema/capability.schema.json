@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/capability.schema.json",
+  "title": "Capability manifest",
+  "description": "An Adobe-native capability (drop-in / localization / personalization / analytics) as a generalized Class-C generator. DRAFT 2026-06-29 — ahead of the consuming engine; see docs/design/aira-capability-manifests.md sec.3. Not yet wired into validate.mjs.",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "id", "label", "category", "appliesToStacks", "fields", "files"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "kind": { "const": "capability" },
+    "id": { "type": "string", "description": "namespaced, e.g. commerce.live-search" },
+    "label": { "type": "string" },
+    "category": { "enum": ["data-binding", "localization", "personalization", "experimentation", "analytics"] },
+    "appliesToStacks": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "provisioning": {
+      "type": "object",
+      "description": "Class-C check (warn-only) before the write",
+      "properties": {
+        "label": { "type": "string" },
+        "check": { "type": "string" },
+        "help": { "type": "string" }
+      }
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "type"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "type": { "enum": ["text", "select", "secret"], "description": "secret -> keychain, NEVER to the model" },
+          "options": { "type": "array", "items": { "type": "string" } },
+          "default": { "type": "string" }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "template"],
+        "properties": {
+          "path": { "type": "string" },
+          "template": { "type": "string" },
+          "merge": { "type": "boolean" },
+          "xmlMerge": { "type": "object" }
+        }
+      }
+    },
+    "wiring": {
+      "type": "object",
+      "properties": {
+        "consent": { "type": "boolean" },
+        "steps": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "binds": {
+      "type": "object",
+      "properties": { "service": { "type": "string" }, "via": { "type": "string" } }
+    },
+    "postNote": { "type": "string" },
+    "sourceRef": { "type": "string" },
+    "_integrity": {
+      "type": "object",
+      "properties": { "sha256": { "type": "string" }, "signature": { "type": "string" } }
+    }
+  }
+}

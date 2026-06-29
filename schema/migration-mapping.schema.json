@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/migration-mapping.schema.json",
+  "title": "Migration-mapping manifest (migrate mode)",
+  "description": "Translate ONE source platform's concepts to ONE target's concepts. Deterministic rows run as declared transforms; strategy:model and unmapped:model rows hand off to the build; the rest land in the gap report. DRAFT 2026-06-29 — ahead of the consuming engine; see docs/design/aira-capability-manifests.md sec.9b. Not yet wired into validate.mjs.",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "id", "from", "to", "map"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "kind": { "const": "migration-mapping" },
+    "id": { "type": "string", "description": "e.g. shopify->accs" },
+    "from": { "type": "string", "description": "source platform id (matches a source-adapter id)" },
+    "to": { "type": "string", "description": "target stack id, e.g. accs" },
+    "map": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "target"],
+        "properties": {
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "strategy": { "enum": ["deterministic", "model"], "default": "deterministic" }
+        }
+      }
+    },
+    "unmapped": { "enum": ["model", "skip", "error"], "default": "model", "description": "what to do with concepts not in map; model-first by default" },
+    "sourceRef": { "type": "string" },
+    "_integrity": {
+      "type": "object",
+      "properties": { "sha256": { "type": "string" }, "signature": { "type": "string" } }
+    }
+  }
+}

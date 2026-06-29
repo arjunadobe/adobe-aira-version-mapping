@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/source-adapter.schema.json",
+  "title": "Source-adapter manifest (migrate mode)",
+  "description": "How to read ONE source platform for migration, by live URL or local folder. Open-ended: an unmatched platform falls back to model-first generic analysis. DRAFT 2026-06-29 — ahead of the consuming engine; see docs/design/aira-capability-manifests.md sec.9a. Not yet wired into validate.mjs.",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "id", "label", "detect", "read"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "kind": { "const": "source-adapter" },
+    "id": { "type": "string", "description": "e.g. shopify, salesforce-commerce, commerce-paas, woocommerce" },
+    "label": { "type": "string" },
+    "detect": {
+      "type": "object",
+      "description": "how the analyzer recognizes this source",
+      "properties": {
+        "url": { "type": "array", "items": { "type": "string" }, "description": "headers / markers on a live URL" },
+        "folder": { "type": "array", "items": { "type": "string" }, "description": "file markers in a local export/theme" }
+      }
+    },
+    "read": {
+      "type": "object",
+      "required": ["via"],
+      "properties": {
+        "via": { "enum": ["api", "crawl", "files", "api+crawl"] },
+        "exposes": { "type": "array", "items": { "type": "string" }, "description": "e.g. catalog, collections, metafields, cms-pages, theme" }
+      }
+    },
+    "secretsHint": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "env/credential names that may exist in the source; NEVER sent to the model"
+    },
+    "sourceRef": { "type": "string" },
+    "_integrity": {
+      "type": "object",
+      "properties": { "sha256": { "type": "string" }, "signature": { "type": "string" } }
+    }
+  }
+}

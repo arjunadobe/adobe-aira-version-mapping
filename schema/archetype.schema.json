@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/archetype.schema.json",
+  "title": "Archetype manifest",
+  "description": "An OPTIONAL build prior (recipe), never a required catalog — model-first; a miss falls back to model generation. DRAFT 2026-06-29 — ahead of the consuming engine; see docs/design/aira-capability-manifests.md sec.4. Not yet wired into validate.mjs.",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "id", "label", "sitemap", "blocks"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "kind": { "const": "archetype" },
+    "id": { "type": "string", "description": "open-ended; e.g. qsr-restaurant (NOT a brand)" },
+    "label": { "type": "string" },
+    "matchHints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "router fuzzy-match hints ONLY; may contain real brand names for recognition but they MUST NOT flow into generated output (brand-safety, intent-to-delivery sec.8)"
+    },
+    "sitemap": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "properties": { "path": { "type": "string" }, "title": { "type": "string" } }
+      }
+    },
+    "blocks": { "type": "array", "items": { "type": "string" } },
+    "contentHints": { "type": "object" },
+    "recommendedCapabilities": { "type": "array", "items": { "type": "string" } },
+    "sourceRef": { "type": "string" },
+    "_integrity": {
+      "type": "object",
+      "properties": { "sha256": { "type": "string" }, "signature": { "type": "string" } }
+    }
+  }
+}

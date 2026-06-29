@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/stack.schema.json",
+  "title": "Stack manifest",
+  "description": "A delivery stack (EDS, Adobe Commerce, …) declaring its FULL lifecycle as steps. DRAFT 2026-06-29 — ahead of the consuming engine; see docs/design/aira-capability-manifests.md sec.2. Not yet wired into validate.mjs.",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "id", "label", "tier", "toolchain", "scaffold"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "kind": { "const": "stack" },
+    "id": { "type": "string", "description": "e.g. eds, adobe-commerce, commerce-saas, app-builder" },
+    "label": { "type": "string" },
+    "tier": { "enum": ["A", "B", "C"], "description": "A first-class | B clone-from-url | C static (intent-to-delivery sec.7)" },
+    "toolchain": {
+      "type": "object",
+      "description": "required tools; product-agnostic (node for EDS/AppBuilder, php for Commerce, etc.)",
+      "properties": {
+        "node": { "type": "string" },
+        "php": { "type": "string" },
+        "cli": { "type": "string" },
+        "git": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "scaffold": {
+      "type": "object",
+      "required": ["source"],
+      "properties": {
+        "source": {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": { "enum": ["git-boilerplate", "git-url", "cli-create", "none"] },
+            "repo": { "type": "string" },
+            "command": { "type": "string" }
+          }
+        },
+        "steps": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "preview": {
+      "type": "object",
+      "properties": { "steps": { "type": "array", "items": { "type": "object" } } }
+    },
+    "deploy": {
+      "type": "object",
+      "properties": {
+        "consent": { "type": "boolean" },
+        "steps": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "contentModel": { "enum": ["repo-markdown", "doc-source"] },
+    "allowedCapabilities": { "type": "array", "items": { "type": "string" } },
+    "sourceRef": { "type": "string" },
+    "_integrity": {
+      "type": "object",
+      "properties": { "sha256": { "type": "string" }, "signature": { "type": "string" } }
+    }
+  }
+}

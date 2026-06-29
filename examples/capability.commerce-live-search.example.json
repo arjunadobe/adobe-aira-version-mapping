@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "capability",
+  "id": "commerce.live-search",
+  "label": "Live Search",
+  "category": "data-binding",
+  "appliesToStacks": ["eds", "commerce-saas"],
+  "provisioning": {
+    "label": "Live Search must be enabled in your Commerce instance",
+    "check": "cli:aio commerce admin live-search status",
+    "help": "https://experienceleague.adobe.com/en/docs/commerce-merchant-services/live-search/overview"
+  },
+  "fields": [
+    { "id": "environmentId", "label": "Environment ID", "type": "text" },
+    { "id": "apiKey", "label": "API key", "type": "secret" },
+    { "id": "env", "label": "Environment", "type": "select", "options": ["production", "staging"], "default": "production" }
+  ],
+  "files": [
+    { "path": "blocks/search/search.js", "template": "search.js" },
+    { "path": "scripts/configs.json", "template": "live-search.config.json", "merge": true }
+  ],
+  "wiring": { "consent": true, "steps": [ { "id": "link", "run": "npm run live-search:link" } ] },
+  "binds": { "service": "Adobe Commerce Live Search", "via": "GraphQL" },
+  "postNote": "Live Search wired. Set the environment keys in your Commerce admin to go live.",
+  "sourceRef": "docs/design/aira-capability-manifests.md#3"
+}

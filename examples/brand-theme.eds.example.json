@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "brand-theme",
+  "id": "eds",
+  "label": "EDS theme mapping",
+  "mapping": {
+    "color.primary": "--color-brand",
+    "color.onPrimary": "--color-on-brand",
+    "type.heading": "--font-heading",
+    "type.body": "--font-body",
+    "logo.path": "--logo-src"
+  },
+  "sourceRef": "docs/design/aira-capability-manifests.md#5"
+}

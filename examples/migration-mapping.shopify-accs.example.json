@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "migration-mapping",
+  "id": "shopify->accs",
+  "from": "shopify",
+  "to": "accs",
+  "map": [
+    { "source": "product", "target": "catalog.product", "strategy": "deterministic" },
+    { "source": "collection", "target": "catalog.category", "strategy": "deterministic" },
+    { "source": "metafield", "target": "catalog.custom-attribute", "strategy": "deterministic" },
+    { "source": "page", "target": "cms.page", "strategy": "deterministic" },
+    { "source": "liquid.section", "target": "eds.block", "strategy": "model" }
+  ],
+  "unmapped": "model",
+  "sourceRef": "docs/design/aira-capability-manifests.md#9b"
+}

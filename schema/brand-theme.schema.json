@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/brand-theme.schema.json",
+  "title": "Brand-theme mapping manifest (registry-served)",
+  "description": "The PER-STACK mapping from generic brand tokens to that stack's theme variables. NOTE: the brand KIT itself (logo/palette/type) is per-project user data, NOT registry-served — only this token->variable mapping lives here. DRAFT 2026-06-29 — ahead of the consuming engine; see docs/design/aira-capability-manifests.md sec.5. Not yet wired into validate.mjs.",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "id", "mapping"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "kind": { "const": "brand-theme" },
+    "id": { "type": "string", "description": "the stack id this mapping targets, e.g. eds" },
+    "label": { "type": "string" },
+    "mapping": {
+      "type": "object",
+      "description": "dotted brand-token path -> stack theme variable, e.g. \"color.primary\": \"--color-brand\"",
+      "additionalProperties": { "type": "string" }
+    },
+    "sourceRef": { "type": "string" },
+    "_integrity": {
+      "type": "object",
+      "properties": { "sha256": { "type": "string" }, "signature": { "type": "string" } }
+    }
+  }
+}

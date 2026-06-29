@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "stack",
+  "id": "eds",
+  "label": "AEM Edge Delivery Services",
+  "tier": "A",
+  "toolchain": { "node": ">=18", "cli": "aem-cli@16.20.5", "git": true },
+  "scaffold": {
+    "source": { "type": "git-boilerplate", "repo": "adobe/aem-boilerplate" },
+    "steps": [
+      { "id": "clone", "run": "git clone https://github.com/adobe/aem-boilerplate <dir>" },
+      { "id": "install", "run": "npm install", "cwd": "<dir>" }
+    ]
+  },
+  "preview": { "steps": [ { "id": "up", "run": "aem up", "url": "http://localhost:3000" } ] },
+  "deploy": { "consent": true, "steps": [ { "id": "push", "run": "git push origin main" } ] },
+  "contentModel": "repo-markdown",
+  "allowedCapabilities": ["commerce.live-search", "commerce.catalog-service", "intl.locales", "analytics.web-sdk"],
+  "sourceRef": "docs/design/aira-capability-manifests.md#2"
+}

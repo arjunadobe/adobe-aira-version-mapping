@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "archetype",
+  "id": "qsr-restaurant",
+  "label": "Quick-service restaurant",
+  "matchHints": ["restaurant", "fast food", "qsr", "menu", "kfc", "mcdonald's", "burger"],
+  "sitemap": [
+    { "path": "/", "title": "Home" },
+    { "path": "/menu", "title": "Menu" },
+    { "path": "/locations", "title": "Locations" },
+    { "path": "/about", "title": "About" }
+  ],
+  "blocks": ["hero", "menu-grid", "locations", "promo-cards", "footer"],
+  "contentHints": { "tone": "appetizing, energetic", "sampleData": ["menu", "locations"] },
+  "recommendedCapabilities": ["commerce.live-search"],
+  "sourceRef": "docs/design/aira-capability-manifests.md#4"
+}

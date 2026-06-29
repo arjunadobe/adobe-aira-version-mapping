@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "source-adapter",
+  "id": "shopify",
+  "label": "Shopify",
+  "detect": {
+    "url": ["x-shopify-stage", "cdn.shopify.com", "x-sorting-hat-shopid"],
+    "folder": ["config/settings_schema.json", "sections/*.liquid", "templates/*.liquid"]
+  },
+  "read": {
+    "via": "api+crawl",
+    "exposes": ["catalog", "collections", "metafields", "cms-pages", "theme"]
+  },
+  "secretsHint": ["SHOPIFY_ADMIN_TOKEN", "SHOPIFY_STOREFRONT_TOKEN"],
+  "sourceRef": "docs/design/aira-capability-manifests.md#9a"
+}
