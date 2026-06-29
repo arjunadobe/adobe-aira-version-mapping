@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "capability",
+  "id": "commerce-saas.live-search",
+  "label": "Live Search (productSearch)",
+  "category": "data-binding",
+  "appliesToStacks": [
+    "commerce-saas"
+  ],
+  "applicability": "both",
+  "detect": "mesh.json",
+  "provisioning": {
+    "label": "Live Search",
+    "check": "doc",
+    "help": "Enable in the Commerce admin: Commerce Services Connector + SaaS data export + Live Search. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/live-search"
+  },
+  "fields": [
+    {
+      "id": "queryName",
+      "label": "Query name",
+      "type": "text",
+      "validate": "identifier",
+      "default": "liveSearch"
+    }
+  ],
+  "files": [
+    {
+      "path": "queries/${queryName}.graphql",
+      "template": "live-search.graphql"
+    }
+  ],
+  "binds": {
+    "service": "Live Search"
+  },
+  "postNote": "Live Search is AI-powered (Sensei). Send the productSearch query through API Mesh / the Catalog endpoint; the EDS storefront consumes it via @dropins/storefront-product-discovery.",
+  "sourceRef": "products/commerce-saas/generators/live-search.gen.json (lifted to a capability manifest)"
+}

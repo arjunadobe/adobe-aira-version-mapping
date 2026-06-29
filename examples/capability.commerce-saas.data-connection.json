@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "capability",
+  "id": "commerce-saas.data-connection",
+  "label": "Data Connection (XDM event mapping)",
+  "category": "analytics",
+  "appliesToStacks": [
+    "commerce-saas"
+  ],
+  "applicability": "both",
+  "detect": "mesh.json",
+  "provisioning": {
+    "label": "Data Connection",
+    "check": "doc",
+    "help": "Install the Data Connection module + configure a datastream. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/data-connection"
+  },
+  "fields": [
+    {
+      "id": "eventType",
+      "label": "Commerce event",
+      "type": "select",
+      "options": [
+        "productPageView",
+        "addToCart",
+        "purchase",
+        "searchRequestSent"
+      ],
+      "default": "addToCart"
+    }
+  ],
+  "files": [
+    {
+      "path": "data-connection/${eventType}.mapping.json",
+      "template": "mapping.json"
+    }
+  ],
+  "binds": {
+    "service": "Data Connection"
+  },
+  "postNote": "Forwards first-party Commerce events to AEP/Analytics/Target via the datastream. XDM field types MUST match the Commerce event schema (commerce-saas/data-connection-schema).",
+  "sourceRef": "products/commerce-saas/generators/data-connection.gen.json (lifted to a capability manifest)"
+}

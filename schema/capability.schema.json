@@ -10,7 +10,7 @@
     "kind": { "const": "capability" },
     "id": { "type": "string", "description": "namespaced, e.g. commerce.live-search" },
     "label": { "type": "string" },
-    "category": { "enum": ["data-binding", "localization", "personalization", "experimentation", "analytics"] },
+    "category": { "enum": ["data-binding", "localization", "personalization", "experimentation", "analytics", "integration", "eventing", "payments", "admin-extension"] },
     "appliesToStacks": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
     "applicability": { "type": "string", "description": "saas | on-prem | both | n/a (matches the generator field this generalizes)" },
     "detect": { "type": "string", "description": "optional workspace marker gating the capability, e.g. fstab.yaml" },

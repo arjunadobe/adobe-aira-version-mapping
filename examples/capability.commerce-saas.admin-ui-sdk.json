@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "capability",
+  "id": "commerce-saas.admin-ui-sdk",
+  "label": "Admin UI SDK extension",
+  "category": "admin-extension",
+  "appliesToStacks": [
+    "app-builder"
+  ],
+  "applicability": "both",
+  "detect": "app.config.yaml",
+  "provisioning": {
+    "label": "Admin UI SDK",
+    "check": "doc",
+    "help": "Install the Adobe Commerce Admin UI SDK module in the Commerce instance. https://developer.adobe.com/commerce/extensibility/admin-ui-sdk/"
+  },
+  "fields": [
+    {
+      "id": "menuName",
+      "label": "Admin menu label",
+      "type": "text",
+      "default": "My Extension"
+    },
+    {
+      "id": "routePath",
+      "label": "Route path",
+      "type": "text",
+      "validate": "kebab",
+      "default": "my-extension"
+    }
+  ],
+  "files": [
+    {
+      "path": "src/commerce-backend-ui-1/web/${routePath}/index.html",
+      "template": "page.html"
+    },
+    {
+      "path": "extension-manifest.json",
+      "template": "manifest.json",
+      "merge": true
+    }
+  ],
+  "binds": {
+    "service": "Admin UI SDK"
+  },
+  "postNote": "Admin UI SDK renders this App Builder UI inside the Commerce admin. Declare required ACL resources (commerce-saas/admin-ext-permissions). Run `aio app dev` to preview.",
+  "sourceRef": "products/commerce-saas/generators/admin-ui-sdk.gen.json (lifted to a capability manifest)"
+}

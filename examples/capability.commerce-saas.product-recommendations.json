@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "capability",
+  "id": "commerce-saas.product-recommendations",
+  "label": "Product Recommendations",
+  "category": "personalization",
+  "appliesToStacks": [
+    "commerce-saas"
+  ],
+  "applicability": "both",
+  "detect": "mesh.json",
+  "provisioning": {
+    "label": "Product Recommendations",
+    "check": "doc",
+    "help": "Enable Commerce Services Connector + SaaS data export + Recommendations. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/product-recommendations"
+  },
+  "fields": [
+    {
+      "id": "unitName",
+      "label": "Recommendation unit",
+      "type": "text",
+      "validate": "identifier",
+      "default": "pdpRecs"
+    },
+    {
+      "id": "unitType",
+      "label": "Type",
+      "type": "select",
+      "options": [
+        "most-viewed",
+        "most-purchased",
+        "recommended-for-you",
+        "more-like-this",
+        "bought-together"
+      ],
+      "default": "recommended-for-you"
+    }
+  ],
+  "files": [
+    {
+      "path": "recommendations/${unitName}.json",
+      "template": "unit.json"
+    }
+  ],
+  "binds": {
+    "service": "Product Recommendations"
+  },
+  "postNote": "Behavioral recs (Sensei). Render the unit via @dropins/storefront-recommendations; the storefront event SDK feeds the behavioral signals.",
+  "sourceRef": "products/commerce-saas/generators/product-recommendations.gen.json (lifted to a capability manifest)"
+}

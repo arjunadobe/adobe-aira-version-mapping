@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "capability",
+  "id": "commerce-saas.io-events",
+  "label": "I/O Events consumer (Commerce events)",
+  "category": "eventing",
+  "appliesToStacks": [
+    "app-builder"
+  ],
+  "applicability": "both",
+  "detect": "app.config.yaml",
+  "provisioning": {
+    "label": "Adobe I/O Events for Commerce",
+    "check": "cli:aio app:get-events",
+    "help": "Install the Adobe I/O Events module + register the Commerce event provider. https://developer.adobe.com/commerce/extensibility/events/"
+  },
+  "fields": [
+    {
+      "id": "actionName",
+      "label": "Consumer action",
+      "type": "text",
+      "validate": "kebab",
+      "default": "commerce-event-consumer"
+    },
+    {
+      "id": "eventCode",
+      "label": "Event",
+      "type": "select",
+      "options": [
+        "com.adobe.commerce.observer.catalog_product_save_after",
+        "com.adobe.commerce.observer.sales_order_save_after",
+        "com.adobe.commerce.observer.customer_save_after",
+        "com.adobe.commerce.observer.cataloginventory_stock_item_save_after"
+      ],
+      "default": "com.adobe.commerce.observer.sales_order_save_after"
+    }
+  ],
+  "files": [
+    {
+      "path": "actions/${actionName}/index.js",
+      "template": "consumer.js"
+    }
+  ],
+  "binds": {
+    "service": "Adobe I/O Events for Commerce"
+  },
+  "postNote": "Register the action as an event consumer in app.config.yaml and subscribe to ${eventCode}. I/O Event deliveries can REPEAT — make the handler idempotent (use event.id) (commerce-saas/idempotent-event-handlers).",
+  "sourceRef": "products/commerce-saas/generators/io-events.gen.json (lifted to a capability manifest)"
+}

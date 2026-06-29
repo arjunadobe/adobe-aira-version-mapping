@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "capability",
+  "id": "commerce-saas.payment-services",
+  "label": "Payment Services webhook handler",
+  "category": "payments",
+  "appliesToStacks": [
+    "app-builder"
+  ],
+  "applicability": "both",
+  "detect": "app.config.yaml",
+  "provisioning": {
+    "label": "Payment Services",
+    "check": "doc",
+    "help": "Onboard Payment Services + a merchant account. https://experienceleague.adobe.com/en/docs/commerce-merchant-services/payment-services"
+  },
+  "fields": [
+    {
+      "id": "actionName",
+      "label": "Webhook action",
+      "type": "text",
+      "validate": "kebab",
+      "default": "payment-webhook"
+    }
+  ],
+  "files": [
+    {
+      "path": "actions/${actionName}/index.js",
+      "template": "webhook.js"
+    }
+  ],
+  "binds": {
+    "service": "Payment Services"
+  },
+  "postNote": "Expose as a web action (web: true). VERIFY the provider signature before processing (commerce-saas/payment-webhook-verify); keep the signing secret in .env, never inline.",
+  "sourceRef": "products/commerce-saas/generators/payment-services.gen.json (lifted to a capability manifest)"
+}
