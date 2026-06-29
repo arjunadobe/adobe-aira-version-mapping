@@ -19,7 +19,13 @@
         "properties": {
           "source": { "type": "string" },
           "target": { "type": "string" },
-          "strategy": { "enum": ["deterministic", "model"], "default": "deterministic" }
+          "strategy": {
+            "enum": ["deterministic", "model", "capability", "adobe-tool", "manual"],
+            "default": "deterministic",
+            "description": "HOW the row is handled: deterministic transform | model-generated | delegated to an AIRA capability | delegated to an external Adobe tool | manual human work"
+          },
+          "via": { "type": "string", "description": "the concrete handler — an AIRA capability/pack id (e.g. commerce-saas.live-search, app-builder, eds) or an external ref (e.g. adobe:bulk-data-migration-tool)" },
+          "note": { "type": "string" }
         }
       }
     },

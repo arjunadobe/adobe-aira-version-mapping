@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "migration-mapping",
+  "id": "commerce-paas->accs",
+  "from": "commerce-paas",
+  "to": "accs",
+  "map": [
+    { "source": "assessment.lighthouse-baseline", "target": "assessment.report", "strategy": "capability", "via": "audit.lighthouse", "note": "Adobe pre-migration: document current Lighthouse scores as the baseline to measure post-migration gains." },
+    { "source": "catalog.products-categories-attributes", "target": "accs.catalog-service", "strategy": "capability", "via": "commerce-saas.catalog-service", "note": "Adopt Catalog Service / CCDM as the merchandising source; bulk-load via the Adobe data tool." },
+    { "source": "search.merchandising", "target": "accs.live-search", "strategy": "capability", "via": "commerce-saas.live-search" },
+    { "source": "recommendations", "target": "accs.product-recommendations", "strategy": "capability", "via": "commerce-saas.product-recommendations" },
+    { "source": "customizations.in-process-modules", "target": "app-builder", "strategy": "manual", "via": "app-builder", "note": "Adobe: ALL customizations must move to App Builder + API Mesh; refactor in-process logic to serverless actions (locked core)." },
+    { "source": "extensions.third-party", "target": "app-builder", "strategy": "manual", "via": "app-builder", "note": "In-process extensions recreated as out-of-process; Adobe is shipping popular-extension equivalents to cut build time." },
+    { "source": "integrations.erp-crm-pim-payment-shipping", "target": "accs.integration-starter-kit", "strategy": "manual", "via": "app-builder", "note": "Re-platform via the integration starter kit or the ACCS REST API." },
+    { "source": "api-mesh", "target": "accs.api-mesh", "strategy": "capability", "via": "commerce-saas.api-mesh-source", "note": "Build a new mesh or reconfigure; Adobe provides preconfigured meshes." },
+    { "source": "events", "target": "accs.io-events", "strategy": "capability", "via": "commerce-saas.io-events", "note": "Event-driven sync from the PaaS instance to ACCS services." },
+    { "source": "storefront.luma", "target": "eds.commerce-storefront", "strategy": "capability", "via": "eds", "note": "Luma MUST migrate to Commerce Storefront on Edge Delivery (boilerplate + drop-ins)." },
+    { "source": "storefront.pwa", "target": "eds.commerce-storefront", "strategy": "capability", "via": "eds", "note": "PWA may migrate to EDS or be maintained; PWA Studio is otherwise out-of-scope." },
+    { "source": "content.cms-pages-blocks", "target": "eds.content", "strategy": "model", "via": "eds", "note": "Static content (About, blog, banners) -> AEM Services / EDS content authoring." },
+    { "source": "assets.media", "target": "aem-assets", "strategy": "manual", "note": "Migrate if using OOTB media management; no migration if already on AEM Assets." },
+    { "source": "data.orders-customers-historical", "target": "accs.transactional", "strategy": "adobe-tool", "via": "adobe:bulk-data-migration-tool", "note": "Bulk + iterative data migration via ADOBE tooling (by request, Q1 2026). NEVER AIRA; clean/de-dupe before transfer." },
+    { "source": "security.waf-ip-rules", "target": "accs.security-config", "strategy": "manual", "note": "Review and reconfigure custom WAF rules + IP allowlists." },
+    { "source": "cutover.dns", "target": "accs.go-live", "strategy": "manual", "note": "Planned DNS cutover with minimal downtime; decommission PaaS after the validation period." }
+  ],
+  "unmapped": "model",
+  "sourceRef": "https://experienceleague.adobe.com/en/docs/commerce/cloud-service/migration/overview (read 2026-06-29)"
+}
