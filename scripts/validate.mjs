@@ -55,6 +55,21 @@ export function validateAll(root = path.resolve(__dirname, '..')) {
 			}
 		}
 	}
+
+	// migration/ -- the Adobe-equivalent map(s) the AIRA migrate profiler consumes (3rd-party -> REPLACE).
+	const migDir = path.join(root, 'migration');
+	if (exists(migDir)) {
+		for (const file of fs.readdirSync(migDir).filter(f => f.endsWith('.json'))) {
+			const m = readJson(path.join(migDir, file), errors, `migration/${file}`);
+			if (!m) continue;
+			if (m.kind !== 'migration-equivalents') errors.push(`migration/${file}: kind must be 'migration-equivalents'`);
+			if (!Array.isArray(m.equivalents) || m.equivalents.length === 0) { errors.push(`migration/${file}: no equivalents`); continue; }
+			for (const e of m.equivalents) {
+				if (!e.pattern || !e.equivalent || !e.subsystem) errors.push(`migration/${file}: an equivalent is missing pattern/equivalent/subsystem`);
+				try { new RegExp(e.pattern, e.flags ?? 'i'); } catch (err) { errors.push(`migration/${file}: invalid RegExp pattern '${e.pattern}' (${err.message})`); }
+			}
+		}
+	}
 	return errors;
 }
 

@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aira.dev/schema/migration-equivalents.schema.json",
+  "title": "Migration Adobe-equivalent map",
+  "description": "3rd-party Magento module -> Adobe-native equivalent map consumed by the AIRA migrate profiler (3rd-party -> REPLACE). The IDE compiles each pattern+flags into a case-insensitive RegExp matched against '<module> <composer.name> <require>'. Self-signed via _integrity (sha256 + ed25519), exactly like stack.json / capabilities.json.",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "equivalents"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "kind": { "const": "migration-equivalents" },
+    "description": { "type": "string" },
+    "equivalents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pattern", "equivalent", "subsystem"],
+        "properties": {
+          "pattern": { "type": "string", "description": "A JS RegExp source matched against the module id + composer require." },
+          "flags": { "type": "string", "description": "RegExp flags (default 'i')." },
+          "equivalent": { "type": "string", "description": "The Adobe-native replacement surfaced to the user." },
+          "subsystem": { "type": "string", "description": "search | payment | shipping | pim-feed | marketing | ..." }
+        }
+      }
+    },
+    "_integrity": {
+      "type": "object",
+      "properties": { "sha256": { "type": "string" }, "signature": { "type": "string" } }
+    }
+  }
+}

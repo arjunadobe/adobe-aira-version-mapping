@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "kind": "migration-equivalents",
+  "description": "3rd-party Magento module -> Adobe-native equivalent map, consumed by the AIRA migrate profiler's 3rd-party->REPLACE classification. Cited to Adobe migration guidance. The IDE compiles each `pattern` with `flags` into a case-insensitive RegExp and matches it against `<module> <composer.name> <require>`. Mirrors the in-IDE bundled fallback (ADOBE_EQUIVALENTS in airaModuleProfile.ts); the registry is the live source, the IDE keeps a bundled snapshot for offline.",
+  "equivalents": [
+    { "pattern": "algolia|klevu|searchanise|searchspring|celebros", "flags": "i", "equivalent": "Adobe Live Search (+ Catalog Service)", "subsystem": "search" },
+    { "pattern": "stripe|paypal|braintree|authorizenet|adyen|checkout\\.?com|amazon\\W?pay|klarna|affirm", "flags": "i", "equivalent": "Adobe Commerce Payment Services (or a certified App Builder integration)", "subsystem": "payment" },
+    { "pattern": "shipperhq|temando|shipstation|easypost|aftership", "flags": "i", "equivalent": "ACCS shipping + the Integration Starter Kit", "subsystem": "shipping" },
+    { "pattern": "akeneo|pimcore|feedonomics|godatafeed|channable|wyomind", "flags": "i", "equivalent": "Catalog Service / API Mesh", "subsystem": "pim-feed" },
+    { "pattern": "dotdigital|klaviyo|mailchimp|bronto|emarsys|yotpo", "flags": "i", "equivalent": "Adobe Journey Optimizer + I/O Events", "subsystem": "marketing" }
+  ]
+}
