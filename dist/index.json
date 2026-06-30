@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-06-29T16:27:02.026Z",
+  "generatedAt": "2026-06-30T05:56:51.598Z",
   "products": {
     "commerce": {
       "status": "active",
@@ -62,7 +62,7 @@
     }
   },
   "_integrity": {
-    "sha256": "83a529e8aa97fb31f7d5920e0039338797dca3c2c2f32b3389f5971fac91d3b6",
-    "signature": "ed25519:2WzULviRBjUrdyFGkFEyoxvYKuc0LRMGHGcWVmNKrZNxcuhaBbQ8l3NBiG8BA7mcliirIZ3J3Cx0UbcXrh8yDA=="
+    "sha256": "3e28785985a87a7d641c3f7ab35a1059cb66b50e63e5904864caaf7d9bf39419",
+    "signature": "ed25519:qLuxJ7Q5Ghsmw5iLzUXOJhodscrHO1MzrhuEo+VryM5H+K571jGog5LzHfPFQJOa1nw7tC6K9EwbLWe0OPVpDQ=="
   }
 }
