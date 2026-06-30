@@ -1,0 +1,13 @@
+{
+  "kind": "stack",
+  "stackId": "static",
+  "label": "Static site (HTML/CSS/JS)",
+  "buildGuidance": "Author a COMPLETE, SELF-CONTAINED static website that renders from LOCAL files opened directly in a browser (file://). Put an index.html at the project root with semantic HTML; put the brand styling in a relative-linked styles.css (or an inline <style>); keep any JS inline or in a relative-linked script.js. Do NOT use ES modules (type=module), fetch(), or any server/build step -- everything must work from the file system. Style to the requested brand WITHOUT copying any real trademarks, logos, or copyrighted assets.",
+  "scaffold": {
+    "source": "registry (static)",
+    "steps": [
+      { "label": "Create the project folder", "command": "mkdir -p ${projectName}", "cwd": "parent" }
+    ]
+  },
+  "preview": { "kind": "static-open" }
+}

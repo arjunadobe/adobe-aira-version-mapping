@@ -11,7 +11,8 @@
     "build:generators": "node scripts/build-generators.mjs",
     "build:capabilities": "node scripts/build-capabilities.mjs",
     "sign": "node scripts/sign.mjs",
-    "build": "node scripts/build.mjs && node scripts/build-generators.mjs && node scripts/build-capabilities.mjs && node scripts/sign.mjs",
-    "test:sign": "node --test scripts/sign.test.mjs"
+    "build": "node scripts/build.mjs && node scripts/build-generators.mjs && node scripts/build-capabilities.mjs && node scripts/build-stacks.mjs && node scripts/sign.mjs",
+    "test:sign": "node --test scripts/sign.test.mjs",
+    "build:stacks": "node scripts/build-stacks.mjs"
   }
 }
